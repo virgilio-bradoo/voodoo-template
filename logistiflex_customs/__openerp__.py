@@ -11,6 +11,7 @@ Add customizations for Logistiflex
     'depends': [
         'prestashoperpconnect',
         'multi_company_supplier',
+        'sale_intercompany_auto',
     ],
     'data': [],
     'demo_xml': [],
