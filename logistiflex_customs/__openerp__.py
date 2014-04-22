@@ -12,8 +12,11 @@ Add customizations for Logistiflex
         'prestashoperpconnect',
         'multi_company_supplier',
         'sale_intercompany_auto',
+        'account_invoice_intercompany',
     ],
-    'data': [],
+    'data': [
+        'views/invoice.xml',
+    ],
     'demo_xml': [],
     'test': [],
     'installable': True,
