@@ -4,3 +4,4 @@ import purchase
 import sale
 import invoice
 import connector
+import stock

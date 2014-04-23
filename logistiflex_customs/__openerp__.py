@@ -16,6 +16,7 @@ Add customizations for Logistiflex
     ],
     'data': [
         'views/invoice.xml',
+        'views/prestashop.xml',
         'security/checkpoint.xml',
     ],
     'demo_xml': [],

@@ -52,4 +52,8 @@ class prestashop_backend(orm.Model):
             string='Version',
             required=True
         ),
+        'shipping_state_id': fields.many2one(
+            'prestashop.sale.order.state',
+            string='Shipping state'
+        ),
     }
