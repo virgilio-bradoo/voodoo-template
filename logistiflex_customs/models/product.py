@@ -1,3 +1,4 @@
+from openerp import netsvc
 from openerp.osv import orm
 
 
@@ -31,3 +32,113 @@ class ProductProduct(orm.Model):
         for product in self.browse(cr, uid, ids, context=context):
             for supplierinfo in product.customers_supplierinfo_ids:
                 supplierinfo.product_id._update_prestashop_quantities()
+
+    def create_automatic_op(self, cr, uid, product_ids, context=None):
+        if context is None:
+            context = {}
+        proc_obj = self.pool.get('procurement.order')
+        warehouse_obj = self.pool.get('stock.warehouse')
+        wf_service = netsvc.LocalService("workflow")
+
+        warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)
+        warehouses = warehouse_obj.browse(
+            cr, uid, warehouse_ids, context=context
+        )
+        for warehouse in warehouses:
+            context['warehouse'] = warehouse
+            products = self.read(
+                cr, uid, product_ids, ['virtual_available'], context=context
+            )
+            for product_read in products:
+                if product_read['virtual_available'] >= 0.0:
+                    continue
+
+                product = self.browse(
+                    cr, uid, product_read['id'], context=context
+                )
+                if product.supply_method == 'buy':
+                    location_id = warehouse.lot_input_id.id
+                elif product.supply_method == 'produce':
+                    location_id = warehouse.lot_stock_id.id
+                else:
+                    continue
+                proc_vals = proc_obj._prepare_automatic_op_procurement(
+                    cr, uid, product, warehouse, location_id, context=context
+                )
+                proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
+                wf_service.trg_validate(
+                    uid, 'procurement.order', proc_id, 'button_confirm', cr
+                )
+                wf_service.trg_validate(
+                    uid, 'procurement.order', proc_id, 'button_check', cr
+                )
+        return True
+
+    def check_orderpoints(self, cr, uid, product_ids, context=None):
+        orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
+        op_ids = orderpoint_obj.search(
+            cr, uid,
+            [
+                ('product_id', 'in', product_ids),
+                ('active', '=', True)
+            ],
+            context=context
+        )
+        proc_obj = self.pool.get('procurement.order')
+        wf_service = netsvc.LocalService("workflow")
+        for op in orderpoint_obj.browse(cr, uid, op_ids, context=context):
+            prods = proc_obj._product_virtual_get(cr, uid, op)
+            if prods is None or prods >= op.product_min_qty:
+                continue
+
+            qty = max(op.product_min_qty, op.product_max_qty)-prods
+
+            reste = qty % op.qty_multiple
+            if reste > 0:
+                qty += op.qty_multiple - reste
+
+            if qty <= 0:
+                continue
+            if op.product_id.type != 'consu' and op.procurement_draft_ids:
+                # Check draft procurement related to this order point
+                pro_ids = [x.id for x in op.procurement_draft_ids]
+                procure_datas = proc_obj.read(
+                    cr, uid, pro_ids, ['id', 'product_qty'], context=context
+                )
+                to_generate = qty
+                for proc_data in procure_datas:
+                    if to_generate >= proc_data['product_qty']:
+                        wf_service.trg_validate(
+                            uid,
+                            'procurement.order',
+                            proc_data['id'],
+                            'button_confirm',
+                            cr
+                        )
+                        proc_obj.write(
+                            cr, uid,
+                            [proc_data['id']],
+                            {'origin': op.name},
+                            context=context
+                        )
+                        to_generate -= proc_data['product_qty']
+                    if not to_generate:
+                        break
+                qty = to_generate
+
+            if qty:
+                proc_vals = proc_obj._prepare_orderpoint_procurement(
+                    cr, uid, op, qty, context=context
+                )
+                proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
+                wf_service.trg_validate(
+                    uid, 'procurement.order', proc_id, 'button_confirm', cr
+                )
+                orderpoint_obj.write(
+                    cr, uid, [op.id],
+                    {'procurement_id': proc_id},
+                    context=context
+                )
+                wf_service.trg_validate(
+                    uid, 'procurement.order', proc_id, 'button_check', cr
+                )
