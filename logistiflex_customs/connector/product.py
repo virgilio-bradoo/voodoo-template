@@ -11,6 +11,10 @@ from .backend import prestashop_logistiflex
 
 @prestashop_logistiflex
 class LogistiflexProductMapper(ProductMapper):
+    direct = ProductMapper.direct + [
+        ('wholesale_price', 'manual_cost_price'),
+    ]
+
     def _product_code_exists(self, code):
         company_obj = self.session.pool.get('res.company')
         company_ids = company_obj.search(self.session.cr, SUPERUSER_ID, [])
@@ -25,6 +29,10 @@ class LogistiflexProductMapper(ProductMapper):
 
 @prestashop_logistiflex
 class LogistiflexProductCombinationMapper(ProductCombinationMapper):
+    direct = ProductCombinationMapper.direct + [
+        ('wholesale_price', 'manual_cost_price'),
+    ]
+
     def _product_code_exists(self, code):
         company_obj = self.session.pool.get('res.company')
         company_ids = company_obj.search(self.session.cr, SUPERUSER_ID, [])
