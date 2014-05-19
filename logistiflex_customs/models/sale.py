@@ -27,7 +27,7 @@ class SaleOrder(Model):
         for ps_so in self.browse(cr, uid, ids, context=context):
             for order_line in ps_so.order_line:
                 if not(order_line.product_id and
-                        order_line.product_id.has_same_erp_supplier()):
+                        order_line.product_id.has_same_erp_supplier):
                     continue
                 for move_id in order_line.move_ids:
                     for procurement in move_id.procurements:
