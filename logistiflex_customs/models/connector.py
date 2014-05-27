@@ -5,21 +5,18 @@ from openerp.osv.orm import Model
 class ConnectorCheckpoint(Model):
     _inherit = 'connector.checkpoint'
 
-    def get_object(self, cr, uid, reference, context=None):
-        model, id = reference.split(',', 2)
-        return self.pool.get(model).browse(cr, uid, id, context=context)
-
     def _get_company_id(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
-        for checkpoint in self.browse(cr, uid, fields, context=context):
+        for checkpoint in self.browse(cr, uid, ids, context=context):
             if checkpoint.backend_id:
-                backend = self.get_object(cr, uid, checkpoint.backend_id, context=context)
+                backend = checkpoint.backend_id
                 if backend.company_id:
-                    result[checkpoint.id] = backend.company_id
+                    result[checkpoint.id] = backend.company_id.id
+                    continue
             if checkpoint.record:
-                record = self.get_object(cr, uid, checkpoint.record, context=context)
+                record = checkpoint.record
                 if record.company_id:
-                    result[checkpoint.id] = backend.company_id
+                    result[checkpoint.id] = record.company_id.id
         return result            
 
     _columns = {
