@@ -49,16 +49,21 @@ class StockPicking(Model):
     def validate(self, cr, uid, ids, context=None):
         if not isinstance(ids, list):
             ids = [ids]
-        for picking_id in ids:
+        for picking in self.browse(cr, uid, ids, context=context):
+            if picking.state == 'confirmed':
+                self.force_assign(cr, uid, [picking.id])
             partial_picking_obj = self.pool.get('stock.partial.picking')
             partial_picking = partial_picking_obj.default_get(
                 cr, uid,
                 ['picking_id', 'move_ids', 'date'],
                 context={
                     'active_ids': [picking_id],
-                    'active_model': 'stock.picking'
+                    'active_model': 'stock.picking',
                 }
             )
+            partial_picking['move_ids'] = [
+                (0, 0, line) for line in partial_picking['move_ids']
+            ]
             partial_picking_id = partial_picking_obj.create(
                 cr, uid, partial_picking, context=context
             )
@@ -82,6 +87,20 @@ class StockPickingOut(Model):
             _get_order_message_ids, type='one2many', obj='mail.message',
         ),
     }
+
+    def validate(self, cr, uid, ids, context=None):
+        return self.pool.get('stock.picking').validate(
+            cr, uid, ids, context=context
+        )
+
+
+class StockPickingIn(Model):
+    _inherit = 'stock.picking.in'
+
+    def validate(self, cr, uid, ids, context=None):
+        return self.pool.get('stock.picking').validate(
+            cr, uid, ids, context=context
+        )
 
 
 @job

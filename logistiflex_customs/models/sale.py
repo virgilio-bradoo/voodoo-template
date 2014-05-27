@@ -1,4 +1,4 @@
-from openerp import netsvc
+from openerp import netsvc, SUPERUSER_ID
 from openerp.osv.orm import Model
 
 from openerp.addons.connector.session import ConnectorSession
@@ -26,7 +26,7 @@ class SaleOrder(Model):
 
     def validate_pickings(self, cr, uid, ids, context=None):
         partial_picking_obj = self.pool.get('stock.partial.picking')
-        for sale_order in self.browse(cr, uid, ids, context=context):
+        for sale_order in self.browse(cr, SUPERUSER_ID, ids, context=context):
             for picking in sale_order.picking_ids:
                 picking.validate()
             if sale_order.purchase_id:
