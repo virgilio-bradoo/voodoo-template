@@ -46,6 +46,27 @@ class StockPicking(Model):
 
         return result
 
+    def validate(self, cr, uid, ids, context=None):
+        if not isinstance(ids, list):
+            ids = [ids]
+        for picking_id in ids:
+            partial_picking_obj = self.pool.get('stock.partial.picking')
+            partial_picking = partial_picking_obj.default_get(
+                cr, uid,
+                ['picking_id', 'move_ids', 'date'],
+                context={
+                    'active_ids': [picking_id],
+                    'active_model': 'stock.picking'
+                }
+            )
+            partial_picking_id = partial_picking_obj.create(
+                cr, uid, partial_picking, context=context
+            )
+            partial_picking_obj.do_partial(
+                cr, uid, [partial_picking_id], context=context
+            )
+        return True
+
 
 class StockPickingOut(Model):
     _inherit = 'stock.picking.out'
