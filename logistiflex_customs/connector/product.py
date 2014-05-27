@@ -54,18 +54,34 @@ class LogistiflexSupplierInfoMapper(SupplierInfoMapper):
         if (not partner.partner_company_id or
                 not record['product_supplier_reference']):
             return {}
-        product_obj = self.session.pool['product.product']
+        combination_obj = self.session.pool['prestashop.product.combination']
+        combination_ids = combination_obj.search(
+            self.session.cr,
+            SUPERUSER_ID,
+            [
+                ('company_id', '=', partner.partner_company_id.id),
+                ('reference', '=', record['product_supplier_reference']),
+                ('purchase_ok', '=', True),
+                ('type', '!=', 'service'),
+            ],
+        )
+        if len(combination_ids) == 1:
+            combination = combination_obj.browse(self.session.cr, SUPERUSER_ID, combination_ids[0])
+            return {'supplier_product_id': combination.openerp_id.id}
+
+        product_obj = self.session.pool['prestashop.product.product']
         product_ids = product_obj.search(
             self.session.cr,
             SUPERUSER_ID,
             [
                 ('company_id', '=', partner.partner_company_id.id),
-                ('default_code', 'like',
-                 '%s%%' % record['product_supplier_reference']),
+                ('reference', '=', record['product_supplier_reference']),
                 ('purchase_ok', '=', True),
                 ('type', '!=', 'service'),
             ]
         )
         if len(product_ids) != 1:
             return {}
-        return {'supplier_product_id': product_ids[0]}
+        product = product_obj.read(self.session.cr, SUPERUSER_ID, product_ids[0], ['openerp_id'])
+
+        return {'supplier_product_id': product['openerp_id'][0]}

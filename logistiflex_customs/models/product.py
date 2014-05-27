@@ -25,13 +25,14 @@ class PrestashopProductCombination(orm.Model):
 class ProductProduct(orm.Model):
     _inherit = 'product.product'
 
-    def _update_prestashop_quantities(self, cr, uid, ids, context=None):
-        super(ProductProduct, self)._update_prestashop_quantities(
+    def update_prestashop_quantities(self, cr, uid, ids, context=None):
+        super(ProductProduct, self).update_prestashop_quantities(
             cr, uid, ids, context=context
         )
         for product in self.browse(cr, uid, ids, context=context):
             for supplierinfo in product.customers_supplierinfo_ids:
-                supplierinfo.product_id._update_prestashop_quantities()
+                supplierinfo.product_id.update_prestashop_quantities()
+        return True
 
     def create_automatic_op(self, cr, uid, product_ids, context=None):
         if context is None:
