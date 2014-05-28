@@ -45,6 +45,7 @@ class ProductProduct(orm.Model):
         warehouses = warehouse_obj.browse(
             cr, uid, warehouse_ids, context=context
         )
+        proc_ids = []
         for warehouse in warehouses:
             context['warehouse'] = warehouse
             products = self.read(
@@ -67,13 +68,14 @@ class ProductProduct(orm.Model):
                     cr, uid, product, warehouse, location_id, context=context
                 )
                 proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
+                proc_ids.append(proc_id)
                 wf_service.trg_validate(
                     uid, 'procurement.order', proc_id, 'button_confirm', cr
                 )
                 wf_service.trg_validate(
                     uid, 'procurement.order', proc_id, 'button_check', cr
                 )
-        return True
+        return proc_ids
 
     def check_orderpoints(self, cr, uid, product_ids, context=None):
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
@@ -87,6 +89,7 @@ class ProductProduct(orm.Model):
         )
         proc_obj = self.pool.get('procurement.order')
         wf_service = netsvc.LocalService("workflow")
+        proc_ids = []
         for op in orderpoint_obj.browse(cr, uid, op_ids, context=context):
             prods = proc_obj._product_virtual_get(cr, uid, op)
             if prods is None or prods >= op.product_min_qty:
@@ -132,6 +135,7 @@ class ProductProduct(orm.Model):
                     cr, uid, op, qty, context=context
                 )
                 proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
+                proc_ids.append(proc_id)
                 wf_service.trg_validate(
                     uid, 'procurement.order', proc_id, 'button_confirm', cr
                 )
@@ -143,3 +147,4 @@ class ProductProduct(orm.Model):
                 wf_service.trg_validate(
                     uid, 'procurement.order', proc_id, 'button_check', cr
                 )
+        return proc_ids
