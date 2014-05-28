@@ -1,3 +1,4 @@
+from openerp import netsvc
 from openerp.osv.orm import Model
 from openerp.osv import fields
 from openerp.addons.prestashoperpconnect.connector import get_environment
@@ -57,7 +58,7 @@ class StockPicking(Model):
                 cr, uid,
                 ['picking_id', 'move_ids', 'date'],
                 context={
-                    'active_ids': [picking_id],
+                    'active_ids': [picking.id],
                     'active_model': 'stock.picking',
                 }
             )
@@ -71,6 +72,18 @@ class StockPicking(Model):
                 cr, uid, [partial_picking_id], context=context
             )
         return True
+
+    def action_reopen(self, cr, uid, ids, context=None):
+        move_obj = self.pool.get('stock.move')
+        wf_service = netsvc.LocalService("workflow")
+        self.write(cr, uid, ids, {'state': 'draft'})
+        pickings = self.read(cr, uid, ids, ['move_lines'], context=context)
+        for picking in pickings:
+            move_obj.write(
+                cr, uid, picking['move_lines'], {'state': 'confirmed'}
+            )
+            wf_service.trg_delete(uid, 'stock.picking', picking['id'], cr)
+            wf_service.trg_create(uid, 'stock.picking', picking['id'], cr)
 
 
 class StockPickingOut(Model):
@@ -110,4 +123,4 @@ def export_sale_state(session, prestashop_id, new_state):
     backend_id = sale_order.backend_id.id
     env = get_environment(session, inherit_model, backend_id)
     sale_exporter = env.get_connector_unit(SaleStateExport)
-    sale_exporter.run(sale_order.id, new_state)
+    sale_exporter.run(sale_order.prestashop_id, new_state)

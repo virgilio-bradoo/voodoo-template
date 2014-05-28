@@ -11,8 +11,10 @@ class SaleOrder(Model):
     def action_wait(self, cr, uid, ids, context=None):
         res = super(SaleOrder, self).action_wait(cr, uid, ids, context=context)
         session = ConnectorSession(cr, uid, context=context)
-        for so_id in ids:
-            validate_pickings.delay(session, 'sale.order', so_id)
+        for sale_order in self.browse(cr, uid, ids, context=context):
+            if not sale_order.is_intercompany:
+                continue
+            validate_pickings.delay(session, 'sale.order', sale_order.id)
         return res
 
     def action_ship_create(self, cr, uid, ids, context=None):
@@ -24,6 +26,8 @@ class SaleOrder(Model):
 
     def validate_pickings(self, cr, uid, ids, context=None):
         for sale_order in self.browse(cr, SUPERUSER_ID, ids, context=context):
+            if not sale_order.is_intercompany:
+                continue
             for picking in sale_order.picking_ids:
                 picking.validate()
             if sale_order.purchase_id:
@@ -64,12 +68,12 @@ def validate_pickings(session, model_name, ps_sale_order_id):
 @job
 def validate_procurement_purchase(session, proc_id):
     proc_obj = session.pool.get('procurement.order')
-    proc = proc_obj.browse(session.cr, session.uid, [proc_id], session.context)
+    proc = proc_obj.browse(session.cr, session.uid, proc_id, session.context)
     wf_service = netsvc.LocalService("workflow")
     wf_service.trg_validate(
         session.uid,
         'purchase.order',
-        proc.purchase_id,
+        proc.purchase_id.id,
         'purchase_confirm',
         session.cr
     )
