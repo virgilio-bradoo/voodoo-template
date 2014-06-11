@@ -39,8 +39,7 @@ class SaleOrder(Model):
         product_ids = []
         for sale_order in self.browse(cr, uid, ids, context=context):
             for sale_order_line in sale_order.order_line:
-                if (sale_order_line.product_id and
-                        sale_order_line.product_id.has_same_erp_supplier):
+                if sale_order_line.product_id:
                     product_ids.append(sale_order_line.product_id.id)
         product_obj = self.pool.get('product.product')
         if context is None:
