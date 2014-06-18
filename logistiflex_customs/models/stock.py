@@ -120,7 +120,7 @@ class StockMove(Model):
     _inherit = 'stock.move'
 
     _columns = {
-        'bom_id': fields.many2one('mrp.bom', 'Bom'),
+        'bom_id': fields.many2one('mrp.bom', 'Pack'),
     }
 
     def _action_explode(self, cr, uid, move, context=None):
