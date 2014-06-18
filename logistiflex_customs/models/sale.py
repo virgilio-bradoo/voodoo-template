@@ -36,21 +36,33 @@ class SaleOrder(Model):
         return True
 
     def check_product_orderpoints(self, cr, uid, ids, context=None):
+        product_ids_to_validate = []
         product_ids = []
         for sale_order in self.browse(cr, uid, ids, context=context):
             for sale_order_line in sale_order.order_line:
                 if sale_order_line.product_id:
-                    product_ids.append(sale_order_line.product_id.id)
+                    if sale_order_line.product_id.has_same_erp_supplier:
+                        product_ids_to_validate.append(
+                            sale_order_line.product_id.id
+                        )
+                    else:
+                        product_ids.append(sale_order_line.product_id.id)
         product_obj = self.pool.get('product.product')
         if context is None:
             context = {}
+        product_obj.create_automatic_op(
+            cr, uid, product_ids, context=context
+        )
+        product_obj.check_orderpoints(
+            cr, uid, product_ids, context=context
+        )
         context['purchase_auto_merge'] = False
         proc_ids = []
         proc_ids += product_obj.create_automatic_op(
-            cr, uid, product_ids, context=context
+            cr, uid, product_ids_to_validate, context=context
         )
         proc_ids += product_obj.check_orderpoints(
-            cr, uid, product_ids, context=context
+            cr, uid, product_ids_to_validate, context=context
         )
         for proc_id in proc_ids:
             session = ConnectorSession(cr, uid, context=context)
