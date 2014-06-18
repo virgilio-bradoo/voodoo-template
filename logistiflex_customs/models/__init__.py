@@ -5,3 +5,4 @@ import sale
 import invoice
 import connector
 import stock
+import mrp

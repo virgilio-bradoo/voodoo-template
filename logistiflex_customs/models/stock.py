@@ -116,6 +116,35 @@ class StockPickingIn(Model):
         )
 
 
+class StockMove(Model):
+    _inherit = 'stock.move'
+
+    _columns = {
+        'bom_id': fields.many2one('mrp.bom', 'Bom'),
+    }
+
+    def _action_explode(self, cr, uid, move, context=None):
+        move_ids = super(StockMove, self)._action_explode(
+            cr, uid, move, context=context
+        )
+        bom_obj = self.pool.get('mrp.bom')
+        for move in self.browse(cr, uid, move_ids, context=context):
+            if not move.sale_line_id or not move.sale_line_id.product_id:
+                continue
+            product_id = move.sale_line_id.product_id.id
+            if move.product_id.id == product_id:
+                continue
+            bom_ids = bom_obj.search(cr, uid, [
+                ('product_id', '=', product_id),
+                ('bom_id', '=', False),
+                ('type', '=', 'phantom')
+            ])
+            if not bom_ids:
+                continue
+            move.write({'bom_id': bom_ids[0]})
+        return move_ids
+
+
 @job
 def export_sale_state(session, prestashop_id, new_state):
     inherit_model = 'prestashop.sale.order'
