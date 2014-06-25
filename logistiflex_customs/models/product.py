@@ -77,9 +77,9 @@ class ProductProduct(orm.Model):
                 )
         return proc_ids
 
-    def check_orderpoints(self, cr, uid, product_ids, context=None):
+    def get_orderpoint_ids(self, cr, uid, product_ids, context=None):
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
-        op_ids = orderpoint_obj.search(
+        return orderpoint_obj.search(
             cr, uid,
             [
                 ('product_id', 'in', product_ids),
@@ -87,6 +87,27 @@ class ProductProduct(orm.Model):
             ],
             context=context
         )
+
+    def check_orderpoints_or_automatic(self, cr, uid, product_ids,
+                                       context=None):
+        proc_ids = []
+        for product_id in product_ids:
+            op_ids = self.get_orderpoint_ids(
+                cr, uid, [product_id], context=context
+            )
+            if not op_ids:
+                proc_ids += self.create_automatic_op(
+                    cr, uid, [product_id], context=context
+                )
+            else:
+                proc_ids += self.check_orderpoints(
+                    cr, uid, [product_id], context=context
+                )
+        return proc_ids
+
+    def check_orderpoints(self, cr, uid, product_ids, context=None):
+        orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
+        op_ids = self.get_orderpoint_ids(cr, uid, product_ids, context=context)
         proc_obj = self.pool.get('procurement.order')
         wf_service = netsvc.LocalService("workflow")
         proc_ids = []
@@ -98,8 +119,11 @@ class ProductProduct(orm.Model):
             qty = max(op.product_min_qty, op.product_max_qty)-prods
 
             reste = qty % op.qty_multiple
-            if reste > 0:
-                qty += op.qty_multiple - reste
+            if reste != 0:
+                if op.product_max_qty:
+                    qty -= reste
+                else:
+                    qty += op.qty_multiple - reste
 
             if qty <= 0:
                 continue

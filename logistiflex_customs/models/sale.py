@@ -50,23 +50,18 @@ class SaleOrder(Model):
         product_obj = self.pool.get('product.product')
         if context is None:
             context = {}
-        product_obj.create_automatic_op(
-            cr, uid, product_ids, context=context
-        )
-        product_obj.check_orderpoints(
-            cr, uid, product_ids, context=context
-        )
-        context['purchase_auto_merge'] = False
-        proc_ids = []
-        proc_ids += product_obj.create_automatic_op(
-            cr, uid, product_ids_to_validate, context=context
-        )
-        proc_ids += product_obj.check_orderpoints(
-            cr, uid, product_ids_to_validate, context=context
-        )
-        for proc_id in proc_ids:
-            session = ConnectorSession(cr, uid, context=context)
-            validate_procurement_purchase.delay(session, proc_id)
+        if product_ids:
+            product_obj.check_orderpoints_or_automatic(
+                cr, uid, product_ids, context=context
+            )
+        if product_ids_to_validate:
+            context['purchase_auto_merge'] = False
+            proc_ids = product_obj.check_orderpoints_or_automatic(
+                cr, uid, product_ids_to_validate, context=context
+            )
+            for proc_id in proc_ids:
+                session = ConnectorSession(cr, uid, context=context)
+                validate_procurement_purchase.delay(session, proc_id)
 
 
 @job
