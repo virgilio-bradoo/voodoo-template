@@ -145,6 +145,25 @@ class StockMove(Model):
         return move_ids
 
 
+class StockInventoryLine(Model):
+    _inherit = 'stock.inventory.line'
+
+    def _default_stock_location(self, cr, uid, context=None):
+        warehouse_obj = self.pool['stock.warehouse']
+        warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)
+        if not warehouse_ids:
+            return super(StockInventoryLine, self)._default_stock_location(
+                cr, uid, context=context
+            )
+        warehouse = warehouse_obj.browse(cr, uid, warehouse_ids[0], context=context)
+        return warehouse.lot_stock_id.id
+
+    _defaults = {
+        'location_id': _default_stock_location
+    }
+
+
+
 @job
 def export_sale_state(session, prestashop_id, new_state):
     inherit_model = 'prestashop.sale.order'
