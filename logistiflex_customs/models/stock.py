@@ -23,8 +23,10 @@ class StockPicking(Model):
         return result
 
     _columns = {
+        # note evenif we need a one2many we use a many2many
+        # because function field in one2many are broken
         'order_message_ids': fields.function(
-            _get_order_message_ids, type='one2many', obj='mail.message',
+            _get_order_message_ids, type='many2many', obj='mail.message',
         ),
     }
 
@@ -97,7 +99,7 @@ class StockPickingOut(Model):
 
     _columns = {
         'order_message_ids': fields.function(
-            _get_order_message_ids, type='one2many', obj='mail.message',
+            _get_order_message_ids, type='many2many', obj='mail.message',
         ),
     }
 
