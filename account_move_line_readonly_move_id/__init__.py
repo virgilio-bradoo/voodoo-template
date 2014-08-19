@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-#   Module for OpenERP 
-#   Copyright (C) 2013 Akretion (http://www.akretion.com).
+#   Module for OpenERP
+#   Copyright (C) 2013-TODAY Akretion <http://www.akretion.com>.
 #   @author Sébastien BEAU <sebastien.beau@akretion.com>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,5 +20,5 @@
 #
 ###############################################################################
 
-from . import statement
-from . import account_reconcile
+import account_move_line
+

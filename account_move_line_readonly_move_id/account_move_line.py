@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-#   Module for OpenERP 
-#   Copyright (C) 2013 Akretion (http://www.akretion.com).
+#   Module for OpenERP
+#   Copyright (C) 2014-TODAY Akretion <http://www.akretion.com>.
 #   @author Sébastien BEAU <sebastien.beau@akretion.com>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,5 +20,14 @@
 #
 ###############################################################################
 
-from . import statement
-from . import account_reconcile
+from openerp.osv import orm, fields
+
+class account_move_line(orm.Model):
+    _inherit = "account.move.line"
+
+    def create(self, cr, uid, vals, context=None, check=True):
+        if not vals.get('move_id') and context.get('manual_entrie'):
+            default = self._default_get(cr, uid, ['move_id'], context)
+            vals['move_id'] = default['move_id']
+        return super(account_move_line, self).create(cr, uid, vals, context=context, check=check)
+

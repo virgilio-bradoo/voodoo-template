@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-#   Module for OpenERP 
-#   Copyright (C) 2013 Akretion (http://www.akretion.com).
+#   Module for OpenERP
+#   Copyright (C) 2014 Akretion (http://www.akretion.com).
 #   @author Sébastien BEAU <sebastien.beau@akretion.com>
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -20,5 +20,25 @@
 #
 ###############################################################################
 
-from . import statement
-from . import account_reconcile
+{'name': 'script',
+ 'version': '0.0.1',
+ 'author': 'Akretion',
+ 'website': 'www.akretion.com',
+ 'license': 'AGPL-3',
+ 'category': 'Generic Modules',
+ 'description': """
+ 
+ """,
+ 'depends': [
+     'account',
+     'sale',
+ ],
+ 'data': [
+ ],
+ 'installable': True,
+ 'application': True,
+}
+
+
+
+

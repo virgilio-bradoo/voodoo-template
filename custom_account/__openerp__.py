@@ -33,7 +33,8 @@
      'account_statement_transactionid_completion',
  ],
  'data': [
- ],
+    'data.xml',
+    ],
  'installable': True,
  'application': True,
 }

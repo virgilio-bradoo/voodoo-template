@@ -139,6 +139,51 @@ class AccountStatementCompletionRule(orm.Model):
         return res
 
 
+    def get_from_email(self, cr, uid, st_line, context=None):
+        """
+        Match the partner based on the SO number and the reference of the statement
+        line. Then, call the generic get_values_for_line method to complete other values.
+        If more than one partner matched, raise the ErrorTooManyPartner error.
+
+        :param int/long st_line: read of the concerned account.bank.statement.line
+        :return:
+            A dict of value that can be passed directly to the write method of
+            the statement line or {}
+           {'partner_id': value,
+            'account_id': value,
+
+            ...}
+        """
+        st_obj = self.pool.get('account.bank.statement.line')
+        res = {}
+        if st_line:
+            partner_obj = self.pool.get('res.partner')
+            email = st_line['name'].split(' ')[-1]
+            partner_id = partner_obj.search(cr, uid, [
+                ('email', '=', email),
+                ('is_company', '=', True),
+                ], context=context)
+            if partner_id and len(partner_id) == 1:
+                #TODO FIX ME in multi company mode
+                account_id = 32226
+                res = {
+                    'partner_id': partner_id[0],
+                    'account_id':account_id,
+                }
+            elif partner_id and len(partner_id) > 1:
+                raise ErrorTooManyPartner(_('Line named "%s" (Ref:%s) was matched by more '
+                                                'than one partner while looking on SO by ref.') %
+                                              (st_line['name'], st_line['ref']))
+        return res
+
+class AccountStatementCompletionRule(orm.Model):
+    _inherit = "account.statement.completion.rule"
+
+    def get_functions(self, cr, uid, context=None):
+        res = super(AccountStatementCompletionRule, self).get_functions(cr, uid, context=context)
+        res.append(('get_from_email', 'From Email'))
+        return res
+
 
 
 #class AccountBankStatement(orm.Model):
