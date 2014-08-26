@@ -67,6 +67,9 @@ class ProductProduct(orm.Model):
                 proc_vals = proc_obj._prepare_automatic_op_procurement(
                     cr, uid, product, warehouse, location_id, context=context
                 )
+                proc_vals['purchase_auto_merge'] = context.get(
+                    'purchase_auto_merge', True
+                )
                 proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
                 proc_ids.append(proc_id)
                 wf_service.trg_validate(
@@ -106,6 +109,8 @@ class ProductProduct(orm.Model):
         return proc_ids
 
     def check_orderpoints(self, cr, uid, product_ids, context=None):
+        if context is None:
+            context = {}
         orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
         op_ids = self.get_orderpoint_ids(cr, uid, product_ids, context=context)
         proc_obj = self.pool.get('procurement.order')
@@ -157,6 +162,9 @@ class ProductProduct(orm.Model):
             if qty:
                 proc_vals = proc_obj._prepare_orderpoint_procurement(
                     cr, uid, op, qty, context=context
+                )
+                proc_vals['purchase_auto_merge'] = context.get(
+                    'purchase_auto_merge', True
                 )
                 proc_id = proc_obj.create(cr, uid, proc_vals, context=context)
                 proc_ids.append(proc_id)
