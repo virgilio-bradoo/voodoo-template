@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_stock_picking_out_form" model="ir.ui.view">
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form" />
+            <field name="arch" type="xml">
+                <button name="action_process" position="after">
+                    <button name="print_label"
+                            states="done"
+                            string="Print Label"
+                            type="object"
+                            class="oe_highlight"/>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+
