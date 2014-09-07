@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+<!--    <record id="chronopost_partner_log" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record> -->
+
+    <record id="chronopost_partner_mk6" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+    <record id="chronopost_partner_nov" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chronopost_partner_nsb" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chronopost_partner_red" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+ <!--   <record id="chronopost_partner_smith" model="res.partner">
+      <field name="name">Chronopost</field>
+      <field name="customer" eval="False"/>
+      <field name="supplier" eval="False"/>
+      <field name="email">clients.dv@chronopost.fr</field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record> -->
+  </data>
+</openerp>

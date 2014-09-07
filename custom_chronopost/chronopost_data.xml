@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+
+    <record id="customer_chronopost_account" model="carrier.account">
+      <field name="name">LOGISTIFLEX Particulier</field>
+      <field name="account">57162801</field>
+      <field name="password">501104</field>
+      <field name="file_format">ZPL</field>
+      <field name="type">chronopost</field>
+    </record>
+
+    <record id="pro_chronopost_account" model="carrier.account">
+      <field name="name">LOGISTIFLEX Professionnel</field>
+      <field name="account">57161501</field>
+      <field name="password">436633</field>
+      <field name="file_format">ZPL</field>
+      <field name="type">chronopost</field>
+    </record>
+
+    <record id="chrono_subaccount_log_customer" model="chronopost.account">
+      <field name="sub_account">000</field>
+      <field name="account_id" ref="customer_chronopost_account"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+    <record id="chrono_subaccount_log_pro" model="chronopost.account">
+      <field name="sub_account">000</field>
+      <field name="account_id" ref="pro_chronopost_account"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+      <field name="is_pro">1</field>
+    </record>
+
+    <record id="chrono_subaccount_nsb_customer" model="chronopost.account">
+      <field name="sub_account">001</field>
+      <field name="account_id" ref="customer_chronopost_account"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chrono_subaccount_nsb_pro" model="chronopost.account">
+      <field name="sub_account">001</field>
+      <field name="account_id" ref="pro_chronopost_account"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+      <field name="is_pro">1</field>
+    </record>
+
+    <record id="chrono_subaccount_mk6_customer" model="chronopost.account">
+      <field name="sub_account">002</field>
+      <field name="account_id" ref="customer_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_5"/>
+    </record>
+
+    <record id="chrono_subaccount_mk6_pro" model="chronopost.account">
+      <field name="sub_account">002</field>
+      <field name="account_id" ref="pro_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_5"/>
+      <field name="is_pro">1</field>
+    </record>
+
+    <record id="chrono_subaccount_redox_customer" model="chronopost.account">
+      <field name="sub_account">003</field>
+      <field name="account_id" ref="customer_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+    <record id="chrono_subaccount_redox_pro" model="chronopost.account">
+      <field name="sub_account">003</field>
+      <field name="account_id" ref="pro_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+      <field name="is_pro">1</field>
+    </record>
+
+    <record id="chrono_subaccount_novarec_customer" model="chronopost.account">
+      <field name="sub_account">004</field>
+      <field name="account_id" ref="customer_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chrono_subaccount_novarec_pro" model="chronopost.account">
+      <field name="sub_account">004</field>
+      <field name="account_id" ref="pro_chronopost_account"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+      <field name="is_pro">1</field>
+    </record>
+
+  </data>
+</openerp>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+
+ <!--   <record id="chronopost_product_log" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record> -->
+
+    <record id="chronopost_product_mk6" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" ref="__export__.res_company_5"/>
+    </record>
+
+    <record id="chronopost_product_nov" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chronopost_product_nsb" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chronopost_product_red" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+
+<!--    <record id="chronopost_product_smith" model="product.product">
+      <field name="name">Chronopost Shipping</field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record> -->
+
+
+
+  </data>
+</openerp>

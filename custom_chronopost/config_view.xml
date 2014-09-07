@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+    <record id="view_chronopost_config_logistiflex" model="ir.ui.view">
+        <field name="model">chronopost.account</field>
+        <field name="inherit_id" ref="delivery_carrier_chronopost.view_chronopost_config"/>
+        <field name="arch" type="xml">
+             <xpath expr="/form/group[@col='4']" position="inside">
+                <group colspan="2" attrs="{'invisible': [('sub_account','!=', False)]}">
+                    <field name="is_pro" colspan="4"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    </data>
+</openerp>

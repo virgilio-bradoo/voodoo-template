@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+
+    <!-- DELIVERY METHODS Logistiflex-->
+<!--    <record id="chrono_8_log" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+    <record id="chrono_9_log" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+    <record id="chrono_10_log" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record> 
+
+    <record id="chrono_13_log" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+    <record id="chrono_18_log" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record> 
+
+    <record id="chrono_express_log" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+   <record id="chrono_classic_log" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+
+    <record id="chrono_relais_log" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_log"></field>
+      <field name="product_id" ref="chronopost_product_log"></field>
+      <field name="company_id" eval="3" model="res.company"/>
+    </record>
+-->
+
+    <!-- DELIVERY METHODS MK6-->
+<!--    <record id="chrono_8_mk6" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+    <record id="chrono_9_mk6" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+    <record id="chrono_10_mk6" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record> -->
+
+    <record id="chrono_13_mk6" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+<!--    <record id="chrono_18_mk6" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record> -->
+
+    <record id="chrono_express_mk6" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+ <!--   <record id="chrono_classic_mk6" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record>
+
+    <record id="chrono_relais_mk6" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_mk6"></field>
+      <field name="product_id" ref="chronopost_product_mk6"></field>
+      <field name="company_id" ref="__export__.res_company_5"></field>
+    </record> -->
+
+
+    <!-- DELIVERY METHODS Novarec-->
+ <!--   <record id="chrono_8_nov" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chrono_9_nov" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chrono_10_nov" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record> -->
+
+    <record id="chrono_13_nov" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+<!--    <record id="chrono_18_nov" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record> 
+
+    <record id="chrono_express_nov" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+   <record id="chrono_classic_nov" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record>
+
+    <record id="chrono_relais_nov" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nov"></field>
+      <field name="product_id" ref="chronopost_product_nov"></field>
+      <field name="company_id" ref="__export__.res_company_6"></field>
+    </record> -->
+
+
+    <!-- DELIVERY METHODS NSB Concept-->
+<!--    <record id="chrono_8_nsb" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chrono_9_nsb" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chrono_10_nsb" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record> -->
+
+    <record id="chrono_13_nsb" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+ <!--   <record id="chrono_18_nsb" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record> -->
+
+    <record id="chrono_express_nsb" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+<!--    <record id="chrono_classic_nsb" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record>
+
+    <record id="chrono_relais_nsb" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_nsb"></field>
+      <field name="product_id" ref="chronopost_product_nsb"></field>
+      <field name="company_id" eval="8" model="res.company"/>
+    </record> -->
+
+
+    <!-- DELIVERY METHODS Redox Silicone-->
+<!--    <record id="chrono_8_red" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+    <record id="chrono_9_red" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+    <record id="chrono_10_red" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record> -->
+
+    <record id="chrono_13_red" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+<!--    <record id="chrono_18_red" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record> 
+
+    <record id="chrono_express_red" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+    <record id="chrono_classic_red" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record>
+
+    <record id="chrono_relais_red" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_red"></field>
+      <field name="product_id" ref="chronopost_product_red"></field>
+      <field name="company_id" ref="__export__.res_company_7"></field>
+    </record> -->
+
+
+    <!-- DELIVERY METHODS Smith Immo-->
+<!--    <record id="chrono_8_smith" model="delivery.carrier">
+      <field name="name">Chrono 8</field>
+      <field name="code">ch8</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record>
+
+    <record id="chrono_9_smith" model="delivery.carrier">
+      <field name="name">Chrono 9</field>
+      <field name="type">chronopost</field>
+      <field name="code">ch9</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record>
+
+    <record id="chrono_10_smith" model="delivery.carrier">
+      <field name="name">Chrono 10</field>
+      <field name="code">ch10</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record> 
+
+    <record id="chrono_13_smith" model="delivery.carrier">
+      <field name="name">Chrono 13</field>
+      <field name="code">ch13</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record>
+
+    <record id="chrono_18_smith" model="delivery.carrier">
+      <field name="name">Chrono 18</field>
+      <field name="code">ch18</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record> 
+
+    <record id="chrono_express_smith" model="delivery.carrier">
+      <field name="name">Chrono Express</field>
+      <field name="code">chexp</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record>
+
+   <record id="chrono_classic_smith" model="delivery.carrier">
+      <field name="name">Chrono Classic</field>
+      <field name="code">chcla</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record>
+
+    <record id="chrono_relais_smith" model="delivery.carrier">
+      <field name="name">Chrono Relais</field>
+      <field name="code">chrel</field>
+      <field name="type">chronopost</field>
+      <field name="partner_id" ref="chronopost_partner_smith"></field>
+      <field name="product_id" ref="chronopost_product_smith"></field>
+      <field name="company_id" ref="__export__.res_company_4"></field>
+    </record> -->
+
+
+  </data>
+</openerp>
