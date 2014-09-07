@@ -41,7 +41,7 @@ class ChronopostPrepareWebservice(orm.Model):
             company_customer = presta.company
         for account in company.chronopost_account_ids:
             is_pro = account.is_pro
-            if (company and is_pro) or not (company and is_pro):
+            if (company and is_pro) or (not company and not is_pro):
                 res = account
         if not res:
             raise orm.except_orm('Error', 'The accounts for your company are not well configured!')
