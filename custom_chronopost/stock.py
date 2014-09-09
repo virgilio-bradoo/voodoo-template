@@ -20,9 +20,8 @@
 ##############################################################################
 
 
-from openerp.osv import orm
+from openerp.osv import orm, fields
 from openerp.addons.delivery_label_nsb.stock import StockPickingAbstract
-
 
 class ChronopostPrepareWebservice(orm.Model):
     _inherit = 'chronopost.prepare.webservice'
@@ -41,7 +40,7 @@ class ChronopostPrepareWebservice(orm.Model):
             company_customer = presta.company
         for account in company.chronopost_account_ids:
             is_pro = account.is_pro
-            if (company and is_pro) or (not company and not is_pro):
+            if (company_customer and is_pro) or (not company_customer and not is_pro):
                 res = account
         if not res:
             raise orm.except_orm('Error', 'The accounts for your company are not well configured!')
@@ -90,6 +89,9 @@ class chronopost_prepare_webservice(orm.Model):
 class StockPicking(StockPickingAbstract, orm.Model):
     _inherit = "stock.picking"
 
+    _columns = {
+        'carrier_tracking_ref': fields.char('Carrier Tracking Ref', size=64),
+    }
 
     def print_label(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'Process only one a single id at a time.'
@@ -103,10 +105,29 @@ class StockPicking(StockPickingAbstract, orm.Model):
             self.generate_labels(cr, uid, ids, context=context)
             res = super(StockPicking, self).print_label(cr, uid, ids, context=context)
         return res
+
+    def _generate_chronopost_label(self, cr, uid, picking,
+                                      tracking_ids=None, context=None):
+        res = super(StockPicking, self)._generate_chronopost_label(cr, uid, picking, tracking_ids=tracking_ids, context=context)
+        full_track_number = False
+        for r in res:
+            tracking_number = r['name'].split('.')[0]
+            if full_track_number:
+                full_track_number = full_track_number + '+' + tracking_number
+            else:
+                full_track_number = tracking_number
+        self.write(cr, uid, picking.id,
+                   {'carrier_tracking_ref': full_track_number},
+                   context=context)
+        return res
+            
 
 class StockPickingOut(StockPickingAbstract, orm.Model):
     _inherit = "stock.picking.out"
 
+    _columns = {
+        'carrier_tracking_ref': fields.char('Carrier Tracking Ref', size=64),
+    }
 
     def print_label(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'Process only one a single id at a time.'
@@ -120,4 +141,11 @@ class StockPickingOut(StockPickingAbstract, orm.Model):
             self.generate_labels(cr, uid, ids, context=context)
             res = super(StockPickingOut, self).print_label(cr, uid, ids, context=context)
         return res
+
+class StockPickingIn(StockPickingAbstract, orm.Model):
+    _inherit = "stock.picking.in"
+
+    _columns = {
+        'carrier_tracking_ref': fields.char('Carrier Tracking Ref', size=64),
+    }
 
