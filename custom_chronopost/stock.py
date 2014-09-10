@@ -116,7 +116,7 @@ class StockPicking(StockPickingAbstract, orm.Model):
                 full_track_number = full_track_number + '+' + tracking_number
             else:
                 full_track_number = tracking_number
-        self.write(cr, uid, picking.id,
+        self.pool['stock.picking.out'].write(cr, uid, picking.id,
                    {'carrier_tracking_ref': full_track_number},
                    context=context)
         return res
