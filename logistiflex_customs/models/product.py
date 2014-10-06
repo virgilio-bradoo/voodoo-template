@@ -180,3 +180,4 @@ class ProductProduct(orm.Model):
                     uid, 'procurement.order', proc_id, 'button_check', cr
                 )
         return proc_ids
+

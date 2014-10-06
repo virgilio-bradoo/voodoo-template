@@ -1,6 +1,5 @@
 from openerp import SUPERUSER_ID, netsvc
 from openerp.osv.orm import Model
-
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 
@@ -8,44 +7,43 @@ from openerp.addons.connector.queue.job import job
 class SaleOrder(Model):
     _inherit = 'sale.order'
 
-    def action_wait(self, cr, uid, ids, context=None):
-        res = super(SaleOrder, self).action_wait(cr, uid, ids, context=context)
-        session = ConnectorSession(cr, uid, context=context)
-        for sale_order in self.browse(cr, uid, ids, context=context):
-            if not sale_order.is_intercompany:
-                continue
-            validate_pickings.delay(session, 'sale.order', sale_order.id)
-        return res
 
+    def _prepare_order_line_move(self, cr, uid, order, line, picking_id,
+                                 date_planned, context=None):
+        res = super(SaleOrder, self)._prepare_order_line_move(
+            cr, uid, order, line, picking_id, date_planned, context=context)
+        if order.is_intercompany:
+            sale_line_obj = self.pool['sale.order.line']
+            res['is_intercompany'] = True
+            line_id = line.id
+            line_admin = sale_line_obj.browse(cr, SUPERUSER_ID, [line.id], context=context)[0]
+            move_inter_id = line_admin.purchase_line_id.move_dest_id and line_admin.purchase_line_id.move_dest_id.id
+            res['intercompany_move_id'] = move_inter_id
+        return res
+            
     def action_ship_create(self, cr, uid, ids, context=None):
         result = super(SaleOrder, self).action_ship_create(
             cr, uid, ids, context=None
         )
         self.check_product_orderpoints(cr, uid, ids, context=context)
+        po_obj =  self.pool['purchase.order']
+        session = ConnectorSession(cr, uid, context=context)
+        for sale in self.browse(cr, uid, ids, context=context):
+            po_ids = po_obj.search(cr, uid, [('origin', '=', sale.name)], context=context)
+            for po in po_obj.browse(cr, uid, po_ids, context=context):
+                company = po.partner_id.partner_company_id
+                if not company:
+                    continue
+                po_obj.unlock(cr, uid, [po.id], context=context)
+                validate_purchase.delay(session, po.id)
         return result
 
-    def validate_pickings(self, cr, uid, ids, context=None):
-        for sale_order in self.browse(cr, SUPERUSER_ID, ids, context=context):
-            if not sale_order.is_intercompany:
-                continue
-            for picking in sale_order.picking_ids:
-                picking.validate()
-            if sale_order.purchase_id:
-                for picking in sale_order.purchase_id.picking_ids:
-                    picking.validate()
-        return True
-
     def check_product_orderpoints(self, cr, uid, ids, context=None):
-        product_ids_to_validate = []
         product_ids = []
         for sale_order in self.browse(cr, uid, ids, context=context):
             for sale_order_line in sale_order.order_line:
                 if sale_order_line.product_id:
-                    if sale_order_line.product_id.has_same_erp_supplier:
-                        product_ids_to_validate.append(
-                            sale_order_line.product_id.id
-                        )
-                    else:
+                    if sale_order_line.product_id.procure_method == "make_to_stock":
                         product_ids.append(sale_order_line.product_id.id)
         product_obj = self.pool.get('product.product')
         if context is None:
@@ -54,32 +52,17 @@ class SaleOrder(Model):
             product_obj.check_orderpoints_or_automatic(
                 cr, uid, product_ids, context=context
             )
-        if product_ids_to_validate:
-            context['purchase_auto_merge'] = False
-            proc_ids = product_obj.check_orderpoints_or_automatic(
-                cr, uid, product_ids_to_validate, context=context
-            )
-            for proc_id in proc_ids:
-                session = ConnectorSession(cr, uid, context=context)
-                validate_procurement_purchase.delay(session, proc_id)
+        return True
 
 
 @job
-def validate_pickings(session, model_name, ps_sale_order_id):
-    session.pool.get(model_name).validate_pickings(
-        session.cr, session.uid, [ps_sale_order_id], session.context
-    )
-
-
-@job
-def validate_procurement_purchase(session, proc_id):
-    proc_obj = session.pool.get('procurement.order')
-    proc = proc_obj.browse(session.cr, session.uid, proc_id, session.context)
+def validate_purchase(session, purchase_id):
     wf_service = netsvc.LocalService("workflow")
     wf_service.trg_validate(
         session.uid,
         'purchase.order',
-        proc.purchase_id.id,
+        purchase_id,
         'purchase_confirm',
         session.cr
     )
+
