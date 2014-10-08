@@ -44,13 +44,13 @@ class StockInventory(Model):
                     context.update({'what':'out'})
                     qty_reserved = prod_obj.get_product_available(cr, uid, [pid], context=context)[pid]
                     qty_available = amount + qty_reserved + change
-                    print "*****", qty_available, "kk", qty_reserved, "pp", change
                     if qty_available < 0:
                         missing_qty = -qty_available
                         move_ids = move_obj.search(
                                     cr, uid,
                                     [('location_id', '=', line.location_id.id),
-                                     ('state', '=', 'assigned')],
+                                     ('state', '=', 'assigned'),
+                                     ('product_id', '=', pid)],
                                     order='date_expected', context=context)
                         move_ids = move_ids[::-1]
                         for move in move_obj.browse(cr, uid, move_ids,
