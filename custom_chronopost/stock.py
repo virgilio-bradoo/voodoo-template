@@ -113,7 +113,7 @@ class StockPicking(StockPickingAbstract, orm.Model):
         for r in res:
             tracking_number = r['name'].split('.')[0]
             if full_track_number:
-                full_track_number = full_track_number + '+' + tracking_number
+                full_track_number = full_track_number + ' ' + tracking_number
             else:
                 full_track_number = tracking_number
         self.pool['stock.picking.out'].write(cr, uid, picking.id,
