@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="purchase.report_purchase_order" model="ir.actions.report.xml">
+            <field name="report_file">purchase_order_report_custom/purchase_order.mako</field>
+            <field name="webkit_header" ref="base_headers_webkit.base_minimum_reports_portrait_header"/>
+        </record>
+
+        <record id="purchase.report_purchase_quotation" model="ir.actions.report.xml">
+            <field name="report_file">purchase_order_report_custom/request_quotation.mako</field>
+            <field name="webkit_header" ref="base_headers_webkit.base_minimum_reports_portrait_header"/>
+        </record>
+
+    </data>
+</openerp>
