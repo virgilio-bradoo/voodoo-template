@@ -24,7 +24,8 @@
 from openerp.osv import orm
 from openerp.tools.translate import _
 LOGISTIFLEX_ADDRESS_ID = 42861
-IP_BOX = '192.168.0.32'
+IP_BOX = '192.168.0.33'
+
 
 class StockPickingAbstract():
 

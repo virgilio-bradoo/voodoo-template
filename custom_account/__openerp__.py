@@ -33,6 +33,7 @@
      'account_statement_transactionid_completion',
  ],
  'data': [
+    'account_line_view.xml',
     'data.xml',
     ],
  'installable': True,

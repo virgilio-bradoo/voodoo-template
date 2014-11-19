@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013-TODAY Akretion <http://www.akretion.com>.
+  The licence is in the file __openerp__.py
+-->
+
+<openerp>
+    <data>
+
+        <record id="view_account_move_line_description_filter" model="ir.ui.view">
+            <field name="model">account.move.line</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+            <field name="arch" type="xml">
+                <field name="period_id" position="after">
+                    <field name="name"/>
+                </field>
+                <filter string="Period" position="after">
+                    <filter string="Description" domain="[]" context="{'group_by':'name'}"/>
+                </filter>
+            </field>
+        </record>
+
+    </data>
+</openerp>
