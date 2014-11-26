@@ -34,6 +34,13 @@ class ProductProduct(orm.Model):
                 supplierinfo.product_id.update_prestashop_quantities()
         return True
 
+    #fill purchase description with product name on creation(only on creation)
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('name', False) and not vals.get('description_purchase', False):
+            vals['description_purchase'] = vals.get('name')
+        return super(ProductProduct, self
+                     ).create(cr, uid, vals, context=context)
+
     def create_automatic_op(self, cr, uid, product_ids, context=None):
         if context is None:
             context = {}
