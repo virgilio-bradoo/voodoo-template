@@ -59,7 +59,8 @@ class chronopost_prepare_webservice(orm.Model):
         else:
             name = partner.name
         recipient_data['name'] = name
-        company = partner.prestashop_bind_ids and partner.prestashop_bind_ids[0].company or False
+        parent_partner = partner.parent_id or partner
+        company = parent_partner.prestashop_bind_ids and parent_partner.prestashop_bind_ids[0].company or False
         if company:
             recipient_data['name2'] = company
         else:
