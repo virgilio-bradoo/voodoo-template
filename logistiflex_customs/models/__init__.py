@@ -6,3 +6,4 @@ import invoice
 import connector
 import stock
 import mrp
+import job

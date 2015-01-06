@@ -13,8 +13,10 @@ Add customizations for Logistiflex
         'multi_company_supplier',
         'sale_intercompany_auto',
         'account_invoice_intercompany',
+        'email_template',
     ],
     'data': [
+        'views/data.xml',
         'views/invoice.xml',
         'views/prestashop.xml',
         'views/stock.xml',

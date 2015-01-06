@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!--Email template -->
+        <record id="email_template_check_job" model="email.template">
+            <field name="email_from">info@logistiflex.com</field>
+            <field name="name">Check Queue Job</field>
+            <field name="email_to">florian.dacosta@akretion.com</field>
+            <field name="subject">Blocked jobs</field>
+            <field name="reply_to">info@logistiflex.com</field>
+            <field name="model_id" ref="connector.model_queue_job"/>
+            <field name="body_html"><![CDATA[
+Bonjour,
+
+Il semblerait que les jobs soient bloqués pour Logistiflex.
+Merci de jeter un oeil pour les débloquer le plus vite possible.
+Cordialement,
+OpenERP
+            ]]></field>
+        </record>
+
+    </data>
+</openerp>
