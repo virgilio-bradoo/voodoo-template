@@ -6,7 +6,14 @@ from openerp.addons.connector.queue.job import job
 
 class SaleOrder(Model):
     _inherit = 'sale.order'
-
+    
+    # we do not want to merge purchase order which are from produt in "make_to_order" because it is only
+    # used for intercompany products and these intercompany purchase order should be validated automatically
+    def _prepare_order_line_procurement(self, cr, uid, order, line, move_id, date_planned, context=None):
+        res = super(SaleOrder, self)._prepare_order_line_procurement(cr, uid, order, line, move_id, date_planned, context)
+        if line.type == 'make_to_order':
+            res['purchase_auto_merge'] = False
+        return res
 
     def _prepare_order_line_move(self, cr, uid, order, line, picking_id,
                                  date_planned, context=None):
