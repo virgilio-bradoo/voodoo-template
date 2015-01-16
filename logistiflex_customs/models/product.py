@@ -1,5 +1,6 @@
 from openerp import netsvc
-from openerp.osv import orm
+from openerp.osv import orm, fields
+from openerp.addons import decimal_precision as dp
 
 
 class PrestashopProductProduct(orm.Model):
@@ -8,7 +9,7 @@ class PrestashopProductProduct(orm.Model):
     def _prestashop_qty(self, cr, uid, product, context=None):
         return (
             product.suppliers_immediately_usable_qty
-            + product.immediately_usable_qty
+            + product.bom_stock
         )
 
 
@@ -18,12 +19,49 @@ class PrestashopProductCombination(orm.Model):
     def _prestashop_qty(self, cr, uid, product, context=None):
         return (
             product.suppliers_immediately_usable_qty
-            + product.immediately_usable_qty
+            + product.bom_stock
         )
 
 
 class ProductProduct(orm.Model):
     _inherit = 'product.product'
+
+    def _suppliers_usable_qty(self, cr, uid, ids, field_name, arg,
+                              context=None):
+        if context is None:
+            context = {}
+        warehouse_obj = self.pool['stock.warehouse']
+        res = {}
+        for product in self.browse(cr, uid, ids, context=context):
+            quantity = 0.0
+            for supplier in product.seller_ids:
+                if not supplier.supplier_product_id:
+                    continue
+                company_id = supplier.supplier_product_id.company_id.id
+                warehouse_ids = warehouse_obj.search(
+                    cr, SUPERUSER_ID,
+                    [('company_id', '=', company_id)],
+                    context=context
+                )
+                for warehouse_id in warehouse_ids:
+                    supplier_product = self.browse(
+                        cr, SUPERUSER_ID,
+                        supplier.supplier_product_id.id,
+                        context={'warehouse': warehouse_id}
+                    )
+                    quantity += supplier_product.bom_stock
+            res[product.id] = quantity
+        return res
+
+    _columns = {
+        'suppliers_immediately_usable_qty': fields.function(
+            _suppliers_usable_qty,
+            digits_compute=dp.get_precision('Product UoM'),
+            type='float',
+            string='Suppliers Immediately Usable',
+            help="Quantity of products available for sale from our suppliers."
+        ),
+    }
 
     def update_prestashop_quantities(self, cr, uid, ids, context=None):
         super(ProductProduct, self).update_prestashop_quantities(

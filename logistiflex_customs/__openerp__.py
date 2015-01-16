@@ -9,7 +9,7 @@ Add customizations for Logistiflex
     'author': 'Arthur Vuillard',
     'website': 'http://www.akretion.com',
     'depends': [
-        'prestashoperpconnect',
+        'prestashoperpconnect_export_bom_stock',
         'multi_company_supplier',
         'sale_intercompany_auto',
         'account_invoice_intercompany',
