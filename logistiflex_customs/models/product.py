@@ -1,6 +1,7 @@
 from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.addons import decimal_precision as dp
+from openerp import SUPERUSER_ID
 
 
 class PrestashopProductProduct(orm.Model):
