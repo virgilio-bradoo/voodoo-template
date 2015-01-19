@@ -227,3 +227,27 @@ class ProductProduct(orm.Model):
                 )
         return proc_ids
 
+
+class ProductSupplierinfo(orm.Model):
+    _inherit = 'product.supplierinfo'
+
+    def write(self, cr, uid, ids, vals, context=None):
+        product_obj = self.pool['product.product']
+        res = super(ProductSupplierinfo, self
+                     ).write(cr, uid, ids, vals, context=context)
+        if vals.get('supplier_product_id', False):
+            for sup in self.browse(cr, uid, ids, context=context):
+                product_obj.write(cr, uid, [sup.product_id.id],
+                                  {'procure_method': 'make_to_order'},
+                                  context=context)
+        return res
+
+    def create(self, cr, uid, vals, context=None):
+        product_obj = self.pool['product.product']
+        if vals.get('supplier_product_id', False):
+            product_obj.write(cr, uid, [vals['product_id']],
+                              {'procure_method': 'make_to_order'},
+                              context=context)
+        return super(ProductSupplierinfo, self
+                     ).create(cr, uid, vals, context=context)
+
