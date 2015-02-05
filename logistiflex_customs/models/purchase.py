@@ -21,3 +21,19 @@ class PurchaseOrder(Model):
         )
         vals['order_policy'] = 'picking'
         return vals
+
+class PurchaseOrderLine(Model):
+    _inherit = 'purchase.order.line'
+
+    def _get_existing_purchase_order_line(self, cr, uid, po_line_vals,
+                                          context=None):
+        res = super(PurchaseOrderLine, self)._get_existing_purchase_order_line(
+            cr, uid, po_line_vals, context=context
+        )
+        if res:
+            po_line = self.browse(cr, uid, res, context=context)
+            if po_line.product_id:
+                for supplier in po_line.product_id.seller_ids:
+                    if supplier.supplier_product_id:
+                        return False
+        return res
