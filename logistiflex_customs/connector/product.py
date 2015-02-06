@@ -18,30 +18,39 @@ class LogistiflexProductMapper(ProductMapper):
     def _product_code_exists(self, code):
         company_obj = self.session.pool.get('res.company')
         company_ids = company_obj.search(self.session.cr, SUPERUSER_ID, [])
+        ctx = self.session.context.copy()
+        ctx['active_test'] = False
 
         model = self.session.pool.get('product.product')
         product_ids = model.search(self.session.cr, SUPERUSER_ID, [
             ('default_code', '=', code),
             ('company_id', 'in', company_ids),
-        ])
+        ], context=ctx)
         return len(product_ids) > 0
 
 
 @prestashop_logistiflex
 class LogistiflexProductCombinationMapper(ProductCombinationMapper):
-    direct = ProductCombinationMapper.direct + [
-        ('wholesale_price', 'manual_cost_price'),
-    ]
+
+    @mapping
+    def manual_cost_price(self, record):
+        print "kkkkk"
+        price = float(record['wholesale_price'])
+        main_product = self.main_product(record)
+        price = main_product.manual_cost_price + price
+        return {'manual_cost_price': price}
 
     def _product_code_exists(self, code):
         company_obj = self.session.pool.get('res.company')
         company_ids = company_obj.search(self.session.cr, SUPERUSER_ID, [])
+        ctx = self.session.context.copy()
+        ctx['active_test'] = False
 
         model = self.session.pool.get('product.product')
         product_ids = model.search(self.session.cr, SUPERUSER_ID, [
             ('default_code', '=', code),
             ('company_id', 'in', company_ids),
-        ])
+        ], context=ctx)
         return len(product_ids) > 0
 
 
