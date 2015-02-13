@@ -167,10 +167,24 @@ td.date {
 td.vat {
     white-space: nowrap;
 }
+.address .invoice {
+    font-size: 12px;
+    width: 150px;
+    float: left;
+}
+
+.address .shipping {
+    font-size: 12px;
+    width: 185px;
+    float: left;
+    margin-left: 75px
+}
+
 .address .recipient {
     font-size: 12px;
+    width: 150px;
     margin-left: 350px;
-    margin-right: 120px;
+    margin-right: 60px;
     float: right;
 }
 
@@ -258,15 +272,19 @@ td.main_col1 {
             </table>
             %if purch.company_id.partner_id:
                 <table class="invoice">
-                <tr><td class="address_title">${_("Invoice address:")}</td></tr>
+                <tr><td class="address_title">${_("Invoicing (Invoice address):")}</td></tr>
                 ${address(partner=purch.company_id.partner_id)}
                 </table>
             %endif
             <br/>
-            %if purch.dest_address_id:
+            %if purch.company_id.partner_id:
                 <table class="shipping">
-                <tr><td class="address_title">${_("Shipping address:")}</td></tr>
-                ${address(partner=purch.dest_address_id)}
+                <tr><td class="address_title">${_("Shipping (shipping address):")}</td></tr>
+                <tr><td class="name">LOGISTIFLEX - ${purch.company_id.partner_id.name}</td></tr>
+                <tr><td>1 RUE DE LA REUNION</td></tr>
+                <tr><td>91940  LES ULIS</td></tr>
+                <tr><td>FRANCE</td></tr>
+                <tr><td>Phone: +33(0)164469904</td></tr>
                 </table>
             %endif
         </div>
