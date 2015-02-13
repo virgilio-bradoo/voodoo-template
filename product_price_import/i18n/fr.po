@@ -1,0 +1,111 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* product_price_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-02 18:17+0000\n"
+"PO-Revision-Date: 2015-01-02 18:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_price_import
+#: model:ir.model.fields,field_description:product_price_import.field_multi_file_wizard_file_ids
+#: field:multi.file.wizard,file_ids:0
+msgid "Files"
+msgstr "Fichiers"
+
+#. module: product_price_import
+#: view:import.product.price:0
+#: model:ir.actions.act_window,name:product_price_import.product_price_importer_action
+#: model:ir.ui.menu,name:product_price_import.product_price_importer_menu
+msgid "Import Product Prices"
+msgstr "Import des prix produits"
+
+#. module: product_price_import
+#: field:import.product.price,partner_id:0
+#: model:ir.model.fields,field_description:product_price_import.field_import_product_price_partner_id
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: product_price_import
+#: view:file.wizard:0
+msgid "File has been created"
+msgstr "Un fichier a été créé"
+
+#. module: product_price_import
+#: field:file.wizard,name:0
+#: field:import.product.price,file_name:0
+#: model:ir.model.fields,field_description:product_price_import.field_file_wizard_name
+#: model:ir.model.fields,field_description:product_price_import.field_import_product_price_file_name
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: product_price_import
+#: code:addons/product_price_import/wizard/import_product_price.py:114
+#, python-format
+msgid "Notification"
+msgstr "Notification"
+
+#. module: product_price_import
+#: model:ir.model,name:product_price_import.model_file_wizard
+msgid "file.wizard"
+msgstr "file.wizard"
+
+#. module: product_price_import
+#: view:file.wizard:0
+#: view:multi.file.wizard:0
+msgid "Report"
+msgstr "Rapport"
+
+#. module: product_price_import
+#: field:import.product.price,input_price:0
+#: model:ir.model.fields,field_description:product_price_import.field_import_product_price_input_price
+msgid "Product Price File"
+msgstr "Fichier des prix produits"
+
+#. module: product_price_import
+#: model:ir.model,name:product_price_import.model_multi_file_wizard
+msgid "multi.file.wizard"
+msgstr "multi.file.wizard"
+
+#. module: product_price_import
+#: model:ir.model,name:product_price_import.model_import_product_price
+msgid "import.product.price"
+msgstr "import.product.price"
+
+#. module: product_price_import
+#: field:file.wizard,file:0
+#: model:ir.model.fields,field_description:product_price_import.field_file_wizard_file
+msgid "File"
+msgstr "Fichier"
+
+#. module: product_price_import
+#: field:file.wizard,multifile_wizard_id:0
+#: model:ir.model.fields,field_description:product_price_import.field_file_wizard_multifile_wizard_id
+msgid "Multi Files"
+msgstr "Multi fichiers"
+
+#. module: product_price_import
+#: view:file.wizard:0
+#: view:import.product.price:0
+#: view:multi.file.wizard:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: product_price_import
+#: view:import.product.price:0
+msgid "Import Product Price"
+msgstr "Import des prix produits"
+
+#. module: product_price_import
+#: view:multi.file.wizard:0
+msgid "Files has been created"
+msgstr "Des fichiers ont été créé"
+

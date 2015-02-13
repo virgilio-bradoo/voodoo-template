@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_price_importer_view" model="ir.ui.view">
+            <field name="name">product.price.importer.view</field>
+            <field name="model">import.product.price</field>
+            <field name="arch" type="xml">
+                <form string="Import Product Prices">
+                    <group colspan="4" >
+                        <field name="partner_id"/>
+                        <field name="input_price" filename="file_name" colspan="2"/>
+                        <field name="file_name" colspan="2" invisible="1"/>
+                    </group>
+                    <separator string="" colspan="4"/>
+                    <group colspan="4" col="6">
+                        <button  icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button  icon="gtk-ok" name="import_product_price" string="Import Product Price" type="object"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_price_importer_action" model="ir.actions.act_window">
+            <field name="name">Import Product Prices</field>
+            <field name="res_model">import.product.price</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="product_price_importer_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="product_price_importer_menu" name="Import Product Prices" action="product_price_importer_action" parent="product.prod_config_main"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_wizard_multi_file" model="ir.ui.view">
+            <field name="name">view_wizard_multi_file</field>
+            <field name="model">multi.file.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Report" version="7.0">
+                    <group string="Files has been created">
+                        <field name="file_ids" colspan="4"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_file_wizard" model="ir.ui.view">
+            <field name="name">file.wizard.form</field>
+            <field name="model">file.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Report" version="7.0">
+                    <group string="File has been created">
+                        <field name="name" colspan="4" invisible="1"/>
+	                    <field name="file" colspan="4" filename="name"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
