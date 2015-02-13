@@ -10,6 +10,7 @@ Add customizations for Logistiflex
     'website': 'http://www.akretion.com',
     'depends': [
         'prestashoperpconnect_export_bom_stock',
+        'prestashoperpconnect_export_price',
         'multi_company_supplier',
         'sale_intercompany_auto',
         'account_invoice_intercompany',
