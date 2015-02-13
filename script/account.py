@@ -108,8 +108,8 @@ class AccountInvoice(orm.Model):
             }
         if not ids:
             ids = inv_obj.search(cr, uid, [
-                ('invoice_line.product_id', '=', uid2product_id[uid]),
-                ('date_invoice', '>=', '2013-01-01'),
+                #('invoice_line.product_id', '=', uid2product_id[uid]),
+                ('date_invoice', '>=', '2014-01-01'),
                 '|',
                 ('invoice_line.name', '=like', 'Discount V%'),
                 ('invoice_line.name', '=like', 'Discount avoir%'),
@@ -118,7 +118,7 @@ class AccountInvoice(orm.Model):
             _logger.info('Remove refund product on invoice %s' % inv_id)
             self.dev_draft(cr, uid, [inv_id], context=context)
             line_ids =  inv_line_obj.search(cr, uid, [
-                ('product_id', '=', uid2product_id[uid]),
+                ('name', '=like', 'Discount V%'),
                 ('invoice_id', '=', inv_id),
                 ], context=context)
             _logger.info('Remove lines %s' % line_ids)
