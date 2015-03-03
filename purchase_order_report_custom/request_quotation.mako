@@ -300,11 +300,19 @@ td.main_col1 {
             </thead>
             <tbody>
               %for line in purch.order_line :
+            <tr>
+                <td class="list_main_lines" style="width: 100%">
+                <div class="nobreak">
+                    <table style="width:100%">
               <tr class="line list_main_lines">
                 <td class="main_col1"><div class="nobreak">[${line.product_id and line.product_id.seller_info_id and line.product_id.seller_info_id.product_code or ''}] ${line.product_id and line.product_id.description_purchase and line.product_id.description_purchase.replace('\n','<br/>') or '' | n}</div></td>
                 <td style="text-align:center" class="main_col3">${formatLang(line.date_planned, date=True)}</td>
                 <td class="amount main_col4">${int(line.product_qty)} ${line.product_uom and line.product_uom.name or ''}</td>
               </tr>
+                 </table>
+              </div>
+            </td>
+          </tr>
               %endfor
             </tbody>
         </table>
