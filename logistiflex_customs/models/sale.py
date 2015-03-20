@@ -45,6 +45,17 @@ class SaleOrder(Model):
                 validate_purchase.delay(session, po.id)
         return result
 
+    def force_action_ship_create(self, cr, uid, ids, context=None):
+        if not context:
+            context = {}
+        for sale in self.browse(cr, uid, ids, context=context):
+            if sale.workflow_process_id.id == 3:
+                sale.write({'workflow_process_id': 1})
+                for line in sale.order_line:
+                    if line.state != 'draft' and line.product_id.type != 'service':
+                        line.write({'state': 'draft'})
+        return self.action_ship_create(cr, uid, ids, context=context)
+
     def check_product_orderpoints(self, cr, uid, ids, context=None):
         product_ids = []
         for sale_order in self.browse(cr, uid, ids, context=context):

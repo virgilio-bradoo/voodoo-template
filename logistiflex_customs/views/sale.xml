@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_form" model="ir.ui.view">
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <field name="workflow_process_id" position="after">
+                    <button name="force_action_ship_create"
+                            string="Force Create Picking"
+                            colspan="4" type="object"
+                            attrs="{'invisible': [['workflow_process_id', '!=', 3]]}"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
