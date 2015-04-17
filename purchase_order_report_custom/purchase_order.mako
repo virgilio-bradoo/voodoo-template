@@ -38,6 +38,9 @@ table.list_main_table {
     padding-top: 15px;
 }
 .list_main_lines td,
+.list_main_lines tr {
+    padding-top: 10px;
+}
 .list_main_footers td,
 .list_main_footers th {
     text-align:left;
@@ -339,7 +342,7 @@ td.main_col1 {
                 <td class="list_main_lines" style="width: 100%">
                 <div class="nobreak">
                     <table style="width:100%">
-              <tr>
+              <tr class="line list_main_lines">
                 <td class="main_col1">[${line.product_id and line.product_id.seller_info_id and line.product_id.seller_info_id.product_code or ''}] ${line.product_id and line.product_id.description_purchase and line.product_id.description_purchase.replace('\n','<br/>') or '' | n}</td>
                 <td style="text-align:center" class="main_col2">${ ', '.join([ tax.name or '' for tax in line.taxes_id ])}</td>
                 <td style="text-align:center" class="main_col3">${formatLang(line.date_planned, date=True)}</td>

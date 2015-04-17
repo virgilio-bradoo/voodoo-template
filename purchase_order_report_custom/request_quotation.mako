@@ -38,6 +38,9 @@ table.list_main_table {
     padding-top: 15px;
 }
 .list_main_lines td,
+.list_main_lines tr {
+    padding-top: 10px;
+}
 .list_main_footers td,
 .list_main_footers th {
     border-style: none;
