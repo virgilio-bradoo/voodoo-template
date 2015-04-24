@@ -41,14 +41,22 @@ class StockPicking(Model):
             if picking.type != 'out' or not picking.sale_id:
                 continue
             for ps_sale in picking.sale_id.prestashop_bind_ids:
-                if not ps_sale.backend_id.shipping_state_id:
-                    continue
+                presta_state_id = False
+                carrier_id = picking.carrier_id
+                if carrier_id:
+                    for ps_carrier in carrier_id.prestashop_bind_ids:
+                        presta_state_id = ps_carrier.shipping_state_id and \
+                                          ps_carrier.shipping_state_id.prestashop_id or False
+                if not presta_state_id:
+                    if not ps_sale.backend_id.shipping_state_id:
+                        continue
+                    else:
+                        presta_state_id = ps_sale.backend_id.shipping_state_id.prestashop_id
                 export_sale_state.delay(
                     session,
                     ps_sale.id,
-                    ps_sale.backend_id.shipping_state_id.prestashop_id
+                    presta_state_id
                 )
-
         return result
 
     def validate(self, cr, uid, ids, context=None):
