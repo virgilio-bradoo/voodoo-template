@@ -80,6 +80,30 @@ class ProductProduct(orm.Model):
         return super(ProductProduct, self
                      ).create(cr, uid, vals, context=context)
 
+    # If a 'normal' product change to become a pack : set his stock to 0.
+    def write(self, cr, uid, ids, vals, context=None):
+        if context is None:
+            context = {}
+        if vals.get('supply_method', False) == 'produce':
+            change_qty_wizard = self.pool['stock.change.product.qty']
+            warehouse_obj = self.pool['stock.warehouse']
+            warehouse_ids = warehouse_obj.search(cr, uid, [], context=context)
+            warehouse = warehouse_obj.browse(cr, uid, warehouse_ids[0],
+                context=context)
+            for product in self.browse(cr, uid, ids, context=context):
+                context['active_id'] = product.id
+                if product.qty_available:
+                    wizard_vals = {
+                        'new_quantity': 0.0,
+                        'location_id': warehouse.lot_stock_id.id
+                    }
+                    wiz_id = change_qty_wizard.create(cr, uid, wizard_vals,
+                        context=context)
+                    change_qty_wizard.change_product_qty(cr, uid, [wiz_id],
+                        context=context)
+        return super(ProductProduct, self
+                     ).write(cr, uid, ids, vals, context=context)
+
     def create_automatic_op(self, cr, uid, product_ids, context=None):
         if context is None:
             context = {}
@@ -240,6 +264,12 @@ class ProductSupplierinfo(orm.Model):
                 product_obj.write(cr, uid, [sup.product_id.id],
                                   {'procure_method': 'make_to_order'},
                                   context=context)
+        else:
+            for sup in self.browse(cr, uid, ids, context=context):
+                if not sup.supplier_product_id:
+                    product_obj.write(cr, uid, [sup.product_id.id],
+                                      {'procure_method': 'make_to_stock'},
+                                      context=context)
         return res
 
     def create(self, cr, uid, vals, context=None):

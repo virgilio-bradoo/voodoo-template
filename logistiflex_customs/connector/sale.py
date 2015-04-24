@@ -1,6 +1,6 @@
 from .backend import prestashop_logistiflex
 from openerp.addons.prestashoperpconnect.unit.mapper import SaleOrderMapper
-from openerp.addons.prestashoperpconnect.unit.import_synchronizer import SaleOrderImport
+from openerp.addons.prestashoperpconnect_transaction_id.sale import SaleOrderImportTransaction
 from openerp.addons.prestashoperpconnect.unit.backend_adapter import GenericAdapter
 
 
@@ -21,7 +21,7 @@ class LogistiflexSaleOrderMapper(SaleOrderMapper):
 
 
 @prestashop_logistiflex
-class LogistiflexSaleOrderImport(SaleOrderImport):
+class LogistiflexSaleOrderImport(SaleOrderImportTransaction):
 
     def change_prestashop_total(self, erp_id):
         sess = self.session

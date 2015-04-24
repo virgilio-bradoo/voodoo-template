@@ -110,6 +110,16 @@ class StockPickingOut(Model):
             cr, uid, ids, context=context
         )
 
+    # Cron to assign picking if products are in stock : to remove in v8
+    def check_picking(self, cr, uid, context=None): 
+        picking_ids = self.search(cr,uid,[('state','in',['confirmed'])], 0, None, order="min_date")
+        for picking_id in picking_ids:
+            try:
+                self.action_assign(cr,uid,[picking_id])
+            except Exception,e:
+                continue
+        return True
+
 
 class StockPickingIn(Model):
     _inherit = 'stock.picking.in'
@@ -144,12 +154,10 @@ class StockMove(Model):
                     move_dest_id = move_super['intercompany_move_id'][0]
                     new_uid = self.get_record_id_user(cr, uid, move_dest_id,
                                                       context=context)
-                    print "????", new_uid, "!!", move_dest_id
-                    self.write(cr, new_uid, [move_dest_id],
-                               {'state': vals['state']})
-                    move_dest = self.browse(cr, new_uid,
-                                            [move_dest_id],
-                                            context=context)[0]
+                    move_dest = self.browse(cr, new_uid, move_dest_id, context=context)
+                    if move_dest_id and move_dest.state != 'done':
+                        self.write(cr, new_uid, [move_dest_id],
+                                   {'state': vals['state']})
                     if move_dest.picking_id:
                         wf_service.trg_write(new_uid, 'stock.picking',
                                              move_dest.picking_id.id, cr)
@@ -162,11 +170,17 @@ class StockMove(Model):
         intercompany_linked_move_ids = self.search(cr, SUPERUSER_ID, [
                                        ('is_intercompany', '=', True),
                                        ('intercompany_move_id', 'in', ids),])
-        print "****", intercompany_linked_move_ids
+        move_in_ids = self.search(cr, SUPERUSER_ID, [
+                                  ('picking_id.type', '=', 'in'),
+                                  ('move_dest_id', 'in', ids),
+                                  ('state', '=', 'assigned'),
+                                  ('picking_id.partner_id.partner_company_id', '!=', False)])
         for linked_move_id in intercompany_linked_move_ids:
             new_uid = self.get_record_id_user(cr, uid, linked_move_id,
                                               context=context)
             self.action_cancel(cr, new_uid, [linked_move_id], context=context)
+        for in_move_id in move_in_ids:
+            self.action_cancel(cr, uid, [in_move_id], context=context)
         return True
 
     def _action_explode(self, cr, uid, move, context=None):
@@ -189,6 +203,54 @@ class StockMove(Model):
                 continue
             move.write({'bom_id': bom_ids[0]})
         return move_ids
+
+    #PATCH TO fix bug that mpr cron cant assign picking if this one was manually put in 'waiting'
+    #Should be in addons, to change if PR passes...session = ConnectorSession(cr, uid, context=context)
+    def cancel_assign(self, cr, uid, ids, context=None):
+        res = super(StockMove, self).cancel_assign(cr, uid, ids,
+                                                   context=context)
+        wf_service = netsvc.LocalService("workflow")
+        proc_obj = self.pool['procurement.order']
+        proc_ids = proc_obj.search(cr, uid,
+                                   [('move_id', 'in', ids),
+                                    ('procure_method', '=', 'make_to_stock'),
+                                    ('state', '=', 'ready')],
+                                   context=context)
+        for proc_id in proc_ids:
+            wf_service.trg_delete(uid, 'procurement.order', proc_id, cr)
+            wf_service.trg_create(uid, 'procurement.order', proc_id, cr)
+            wf_service.trg_validate(uid, 'procurement.order',
+                                    proc_id, 'button_confirm', cr)
+        return True
+
+    #Default location for picking in or out should depend of the company and not take the default your company/stock.
+    def get_location_from_user(self, cr, uid, context=None):
+        location_id = False
+        warehouse_obj = self.pool['stock.warehouse']
+        company = self.pool['res.users']._get_company(cr, uid, context=context)
+        if company:
+            warehouse_ids = warehouse_obj.search(cr, uid, [('company_id', '=', company)], context=context)
+            if warehouse_ids:
+                warehouse = warehouse_obj.browse(cr, uid, warehouse_ids[0], context=context)
+                location_id = warehouse.lot_stock_id.id
+        return location_id
+
+    def default_get(self, cr, uid, fields, context=None):
+        res = super(StockMove, self).default_get(
+            cr, uid, fields, context=context)
+        # We only needs to change location field values which are in res keys
+        #ugly way to take company location, change in v8 to surcharge the default method
+        print "***", res
+        if res.get('type', False) == 'in' and res.get('location_dest_id', False) == 12:
+            location_id = self.get_location_from_user(cr, uid, context=context)
+            if location_id:
+                res['location_dest_id'] = location_id
+        if res.get('type', False) == 'out' and res.get('location_id', False) == 12:
+            location_id = self.get_location_from_user(cr, uid, context=context)
+            if location_id:
+                res['location_id'] = location_id
+        return res
+
 
 class StockPartialPicking(TransientModel):
     _inherit = 'stock.partial.picking'
@@ -239,12 +301,17 @@ class StockPartialPicking(TransientModel):
                                       ('picking_id.type', '=', 'in'),
                                       ('move_dest_id', '=', move_id),
                                       ('state', '=', 'assigned')])
-            print "kkkkkkkkkkkkkkkkkkkkkkkk", intercompany_move_ids, "jj", len(intercompany_move_ids)
 
             assert len(intercompany_move_ids) <= 1, 'More than one intercompany move found for move_id %s' % (move_id)
             assert len(move_in_ids) <= 1, 'More than one reception move found for move_id %s' % (move_id)
 
             if intercompany_move_ids:
+                # if supplier_move is not assigned, it is because the produt was in stock in the customer warehouse
+                # it is a bug since it is an intercompany product. We force assign so it will process the picking and
+                # won't get stuck forever.
+                supplier_move = move_obj.browse(cr, SUPERUSER_ID, intercompany_move_ids, context=context)[0]
+                if supplier_move.state == 'confirmed':
+                    move_obj.force_assign(cr, SUPERUSER_ID, intercompany_move_ids, context=context)
                 intercompany_move_dict = self.update_move_pick_dict(cr,
                                             SUPERUSER_ID,
                                             intercompany_move_ids[0], 
