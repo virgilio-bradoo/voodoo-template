@@ -41,10 +41,18 @@ class StockPicking(Model):
             if picking.type != 'out' or not picking.sale_id:
                 continue
             for ps_sale in picking.sale_id.prestashop_bind_ids:
+                backend_id = ps_sale.backend_id.id
                 presta_state_id = False
                 carrier_id = picking.carrier_id
                 if carrier_id:
-                    for ps_carrier in carrier_id.prestashop_bind_ids:
+                    # FIXME a lot of prestashop.delivery.carrier don't have company_id filled
+                    # So the user can read it (the multi company rule can't apply) and then 
+                    # an error raise because it can't read the backend
+                    # Have to clean prestashop.delivery.carrier + clean import so we can do it
+                    # properly
+                    ps_carrier_obj = self.pool['prestashop.delivery.carrier']
+                    ps_carrier_ids = ps_carrier_obj.search(cr, uid, [('backend_id', '=', backend_id), ('openerp_id', '=', carrier_id.id)])
+                    for ps_carrier in ps_carrier_obj.browse(cr, uid, ps_carrier_ids):
                         presta_state_id = ps_carrier.shipping_state_id and \
                                           ps_carrier.shipping_state_id.prestashop_id or False
                 if not presta_state_id:
