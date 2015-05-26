@@ -271,7 +271,15 @@ class StockMove(Model):
 class StockPartialPicking(TransientModel):
     _inherit = 'stock.partial.picking'
 
-
+    def _partial_move_for(self, cr, uid, move, context=None):
+        if not context:
+            context = {}
+        partial_move = super(StockPartialPicking, self)._partial_move_for(
+                cr, uid, move, context=context)
+        if context.get('move_partial_qty', {}).get(move.id, False):
+            new_qty = context.get('move_partial_qty', {}).get(move.id)
+            partial_move['quantity'] = new_qty
+        return partial_move
 
     def update_move_pick_dict(self, cr, uid, move_id, pick_move_dict, context=None):
         move_obj = self.pool['stock.move']
@@ -291,7 +299,7 @@ class StockPartialPicking(TransientModel):
             moves = move_obj.browse(cr, new_uid, move_ids, context=context)
             partial_vals = {
                 'picking_id': p,
-                'move_ids': [(0, 0, self._partial_move_for(cr, new_uid, m)) for m in moves if m.state not in ('done','cancel')],
+                'move_ids': [(0, 0, self._partial_move_for(cr, new_uid, m, context=context)) for m in moves if m.state not in ('done','cancel')],
                 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             }
             partial_picking_id = self.create(cr, new_uid, partial_vals,
@@ -300,6 +308,8 @@ class StockPartialPicking(TransientModel):
         return True
 
     def do_partial(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
         res = super(StockPartialPicking, self).do_partial(
                 cr, uid, ids, context=context)
         partial = self.browse(cr, uid, ids[0], context=context)
@@ -307,12 +317,14 @@ class StockPartialPicking(TransientModel):
         move_in_dict = {}
         move_obj = self.pool['stock.move']
         for wizard_line in partial.move_ids:
+            partial_qty = 0.0
             move_id = wizard_line.move_id.id
             if not wizard_line.quantity:
                 continue
             intercompany_move_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('is_intercompany', '=', True),
-                                      ('intercompany_move_id', '=', move_id)])
+                                      ('intercompany_move_id', '=', move_id),
+                                      ('state', '!=', 'done'),])
             move_in_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('picking_id.type', '=', 'in'),
                                       ('move_dest_id', '=', move_id),
@@ -326,6 +338,8 @@ class StockPartialPicking(TransientModel):
                 # it is a bug since it is an intercompany product. We force assign so it will process the picking and
                 # won't get stuck forever.
                 supplier_move = move_obj.browse(cr, SUPERUSER_ID, intercompany_move_ids, context=context)[0]
+                if supplier_move.product_qty > wizard_line.quantity:
+                    partial_qty = wizard_line.quantity
                 if supplier_move.state == 'confirmed':
                     move_obj.force_assign(cr, SUPERUSER_ID, intercompany_move_ids, context=context)
                 intercompany_move_dict = self.update_move_pick_dict(cr,
@@ -333,12 +347,16 @@ class StockPartialPicking(TransientModel):
                                             intercompany_move_ids[0], 
                                             intercompany_move_dict, 
                                             context=context)
-            if move_in_ids:
-                move_in_dict = self.update_move_pick_dict(cr,
-                                            SUPERUSER_ID,
-                                            move_in_ids[0], 
-                                            move_in_dict, 
-                                            context=context)
+
+                if move_in_ids:
+                    move_in_dict = self.update_move_pick_dict(cr,
+                                                SUPERUSER_ID,
+                                                move_in_ids[0], 
+                                                move_in_dict, 
+                                                context=context)
+                if partial_qty:
+                    context['move_partial_qty'] = {intercompany_move_ids[0]:partial_qty,
+                                                   move_in_ids[0]:partial_qty}
         if intercompany_move_dict:
             self.validate_moves_from_dict(cr, uid, intercompany_move_dict, context=context)
         if move_in_dict:
