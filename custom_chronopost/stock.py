@@ -33,11 +33,8 @@ class ChronopostPrepareWebservice(orm.Model):
             your method to return the right one depending of your picking.
         """
         res = False
-        company_customer = False
         partner = pick.partner_id
-        parent_partner = partner.parent_id or partner
-        for presta in parent_partner.prestashop_bind_ids:
-            company_customer = presta.company
+        company_customer = partner.company or False
         for account in company.chronopost_account_ids:
             is_pro = account.is_pro
             if (company_customer and is_pro) or (not company_customer and not is_pro):
@@ -59,10 +56,8 @@ class chronopost_prepare_webservice(orm.Model):
         else:
             name = partner.name
         recipient_data['name'] = name
-        parent_partner = partner.parent_id or partner
-        company = parent_partner.prestashop_bind_ids and parent_partner.prestashop_bind_ids[0].company or False
-        if company:
-            recipient_data['name2'] = company
+        if partner.company:
+            recipient_data['name2'] = partner.company
         else:
             recipient_data['name2'] = ' '
         recipient_data['alert'] = int(self._get_single_option(
