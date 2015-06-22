@@ -8,20 +8,20 @@ class PrestashopProductProduct(orm.Model):
     _inherit = 'prestashop.product.product'
 
     def _prestashop_qty(self, cr, uid, product, context=None):
-        return (
-            product.suppliers_immediately_usable_qty
-            + product.bom_stock
-        )
+        if product.seller_id and product.seller_id.partner_company_id:
+            return product.suppliers_immediately_usable_qty
+        else:
+            return product.bom_stock
 
 
 class PrestashopProductCombination(orm.Model):
     _inherit = 'prestashop.product.combination'
 
     def _prestashop_qty(self, cr, uid, product, context=None):
-        return (
-            product.suppliers_immediately_usable_qty
-            + product.bom_stock
-        )
+        if product.seller_id and product.seller_id.partner_company_id:
+            return product.suppliers_immediately_usable_qty
+        else:
+            return product.bom_stock
 
 
 class ProductProduct(orm.Model):
@@ -70,7 +70,12 @@ class ProductProduct(orm.Model):
         )
         for product in self.browse(cr, uid, ids, context=context):
             for supplierinfo in product.customers_supplierinfo_ids:
-                supplierinfo.product_id.update_prestashop_quantities()
+                product_id = self.search(
+                    cr, SUPERUSER_ID,
+                    [('product_tmpl_id', '=', supplierinfo.product_id.id)],
+                    context=context)[0]
+                self.browse(cr, SUPERUSER_ID, product_id, context=context).update_prestashop_quantities()
+                #supplierinfo.product_id.update_prestashop_quantities()
         return True
 
     #fill purchase description with product name on creation(only on creation)
