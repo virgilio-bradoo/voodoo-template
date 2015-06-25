@@ -22,6 +22,8 @@
 
 from openerp.osv import orm, fields
 from openerp.addons.delivery_label_nsb.stock import StockPickingAbstract
+from datetime import datetime
+import pytz
 
 class ChronopostPrepareWebservice(orm.Model):
     _inherit = 'chronopost.prepare.webservice'
@@ -104,6 +106,16 @@ class StockPicking(StockPickingAbstract, orm.Model):
 
     def _generate_chronopost_label(self, cr, uid, picking,
                                       tracking_ids=None, context=None):
+        now = datetime.now()
+        now_tz = fields.datetime().context_timestamp(cr, uid, now, context=context)
+        tz = pytz.timezone('Europe/Paris')
+        if now_tz.weekday() in (3, 4) and picking.carrier_id:
+            limit_date = datetime(now_tz.year, now_tz.month, now_tz.day, 15, 30, 0, 0, tz)
+            if (now_tz.weekday() == 3 and now_tz >= limit_date) or (now_tz.weekday() == 4 and now_tz < limit_date):
+                sa13_option = self.pool['delivery.carrier.option'].search(
+                    cr, uid, [('carrier_id', '=', picking.carrier_id.id), ('tmpl_option_id.code', '=', '6')], context=context)
+                if sa13_option:
+                    self.write(cr, uid, picking.id, {'option_ids': [(4, sa13_option[0])]}, context=context)
         res = super(StockPicking, self)._generate_chronopost_label(cr, uid, picking, tracking_ids=tracking_ids, context=context)
         full_track_number = False
         for r in res:
