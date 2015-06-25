@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<!-- FORM-->
+<record id="view_wiz_automatic_deposit" model="ir.ui.view">
+    <field name="name">wizard create.automatic.deposit slip form view</field>
+    <field name="model">automatic.deposit.wizard</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Create deposit slip">
+             <label string="Would you like generate 'Deposit slip' for all delivery methods and all companies?"  colspan="4" />
+             <button icon="gtk-cancel" special="cancel" string="Cancel"/>
+             <button icon="gtk-ok" name="create_automatic_deposit_slip" string="Create All Deposit" type="object"/>
+       </form>
+    </field>
+</record>
+
+
+<!-- ACTION -->
+<record id="action_wiz_create_automatic_deposit" model="ir.actions.act_window">
+    <field name="name">Create Automatic Deposit Slip</field>
+    <field name="res_model">automatic.deposit.wizard</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form,tree</field>
+   <field name="target">new</field>
+</record>
+
+<!-- MENU -->
+<menuitem id="menu_wiz_automatic_delivery_deposit"
+          name="Create Automatic Deposits"
+          action="action_wiz_create_automatic_deposit"
+          parent="delivery_carrier_deposit.menu_delivery_deposit_slip"
+          groups="automatic_deposit_slip"
+          sequence="11" />
+
+
+</data>
+</openerp>
