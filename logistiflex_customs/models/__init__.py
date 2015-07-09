@@ -7,3 +7,4 @@ import connector
 import stock
 import mrp
 import job
+import remove_needaction
