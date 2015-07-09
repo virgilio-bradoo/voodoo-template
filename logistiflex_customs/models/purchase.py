@@ -22,6 +22,20 @@ class PurchaseOrder(Model):
         vals['order_policy'] = 'picking'
         return vals
 
+    # Sometimes a intercompany product is not linked to its supplier's product
+    # In this case, the procure method is make to stock and the purchase order
+    # won't validate. We do not want to merge a make to order intercompany purchase
+    # with it
+    def _get_existing_purchase_order(self, cr, uid, po_vals, context=None):
+        res = super(PurchaseOrder, self)._get_existing_purchase_order(
+            cr, uid, po_vals, context=context
+        )
+        if res:
+            po = self.browse(cr, uid, res, context=context)
+            if po.partner_id.partner_company_id:
+                return False
+        return res
+
 class PurchaseOrderLine(Model):
     _inherit = 'purchase.order.line'
 

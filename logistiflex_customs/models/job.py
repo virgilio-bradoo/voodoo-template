@@ -39,7 +39,7 @@ class QueueJob(orm.Model):
             delay = 2
         max_delay = timedelta(hours=delay)
         print max_delay, "jj", diff
-        if max_delay > diff:
+        if max_delay < diff:
             tmpl_obj = self.pool['email.template']
             template_id = tmpl_obj.search(cr, uid, [('name', '=', 'Check Queue Job')], context=context)[0]
             tmpl_obj.send_mail(cr, uid, template_id, last_job.id, force_send=True, context=context)
