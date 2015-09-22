@@ -271,7 +271,7 @@ class ProductSupplierinfo(orm.Model):
                                   context=context)
         else:
             for sup in self.browse(cr, uid, ids, context=context):
-                if not sup.supplier_product_id:
+                if not sup.supplier_product_id and not sup.product_id.supply_method == 'produce':
                     product_obj.write(cr, uid, [sup.product_id.id],
                                       {'procure_method': 'make_to_stock'},
                                       context=context)

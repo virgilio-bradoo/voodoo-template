@@ -8,3 +8,4 @@ import stock
 import mrp
 import job
 import remove_needaction
+import partner

@@ -6,6 +6,17 @@ from openerp.addons.connector.queue.job import job
 
 class SaleOrder(Model):
     _inherit = 'sale.order'
+
+    def onchange_partner_id(self, cr, uid, ids, part, context=None):
+        vals = super(SaleOrder, self).onchange_partner_id(
+            cr, uid, ids, part, context=context)
+        if not part:
+            return vals
+        partner_obj = self.pool.get('res.partner')
+        partner = partner_obj.browse(cr, uid, part, context=context)
+        if partner.partial_delivery:
+            vals['value']['picking_policy'] = 'direct'
+        return vals
     
     # we do not want to merge purchase order which are from produt in "make_to_order" because it is only
     # used for intercompany products and these intercompany purchase order should be validated automatically
