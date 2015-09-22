@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="bom_check_configuration_view" model="ir.ui.view">
+            <field name="name">bom.check.configuration.view</field>
+            <field name="model">check.bom.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Check Bom Configuration">
+                    <group colspan="4" col="6">
+                        <button  icon="gtk-cancel" special="cancel" string="Cancel"/>
+                        <button  icon="gtk-ok" name="check_bom_configuration" string="Check Configuration" type="object"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="bom_check_configuration_action" model="ir.actions.act_window">
+            <field name="name">Check Bom Configuration</field>
+            <field name="res_model">check.bom.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="bom_check_configuration_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="bom_check_configuration_menu" name="Check Bom configuration"
+                  action="bom_check_configuration_action" parent="product.prod_config_main"/>
+
+    </data>
+</openerp>
