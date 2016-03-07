@@ -62,6 +62,18 @@ class ProductProduct(orm.Model):
             string='Suppliers Immediately Usable',
             help="Quantity of products available for sale from our suppliers."
         ),
+        'list_price_tax_inc': fields.float(
+                'Sale Price Tax Inc',
+                digits_compute=dp.get_precision('Product Price'),
+                track_visibility='onchange',
+                help=("Base price to compute the customer "
+                      "price. Sometimes called the catalog price.")),
+        'dollar_purchase_price': fields.float(
+            'Dollar Purchase Price',
+            digits_compute=dp.get_precision('Product Price')),
+        'pound_purchase_price': fields.float(
+            'Pound Purchase Price',
+            digits_compute=dp.get_precision('Product Price')),
     }
 
     def update_prestashop_quantities(self, cr, uid, ids, context=None):

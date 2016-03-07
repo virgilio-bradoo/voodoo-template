@@ -25,6 +25,7 @@ Add customizations for Logistiflex
         'views/prestashop_carrier.xml',
         'security/checkpoint.xml',
         'views/partner.xml',
+        'views/product.xml',
     ],
     'demo_xml': [],
     'test': [],
