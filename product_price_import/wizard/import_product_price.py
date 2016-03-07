@@ -94,6 +94,17 @@ class ImportProductPrice(orm.TransientModel):
         products_updated = []
         supplier_info_obj = self.pool['product.supplierinfo']
         product_obj = self.pool['product.product']
+        price_list = importer.partner_id.property_product_pricelist_purchase or False
+        currency_purchase_partner = price_list and price_list.currency_id or False
+        dollar_currency = False
+        pound_currency = False
+        purchase_field_position = 0
+        if currency_purchase_partner and currency_purchase_partner.name == 'USD':
+            dollar_currency = True
+            purchase_field_position = 1
+        elif currency_purchase_partner and currency_purchase_partner.name == 'GBP':
+            pound_currency = True
+            purchase_field_position = 2
         #all_product_ids = supplier_info_obj.search(cr, uid, [('name', '=', importer.partner_id.id), ('product_id.purchase_ok', '=', True), ('product_id.sale_ok', '=', True)], context=context)
         # We want supplier info only for active product and the active field is 
         # on product, easier with sql request
@@ -117,23 +128,29 @@ class ImportProductPrice(orm.TransientModel):
                 for product_sup_id in product_sup_ids:
                     vals = {}
                     if row.get('purchase_price', False):
-                        vals['manual_cost_price'] = float(row.get('purchase_price').replace(',', '.'))
+                        if dollar_currency:
+                            vals['dollar_purchase_price'] = float(row.get('purchase_price').replace(',', '.'))
+                        elif pound_currency:
+                            vals['pound_purchase_price'] = float(row.get('purchase_price').replace(',', '.'))
+                        else:
+                            vals['manual_cost_price'] = float(row.get('purchase_price').replace(',', '.'))
                     if row.get('sale_price', False):
                         vals['list_price'] = float(row.get('sale_price').replace(',', '.'))
                     product_sup = supplier_info_obj.browse(cr, uid, [product_sup_id], context=context)[0]
                     template = product_sup.product_id
-                    cr.execute("SELECT manual_cost_price FROM product_product WHERE product_tmpl_id = %s", (template.id,))
+                    cr.execute("SELECT manual_cost_price, dollar_purchase_price, pound_purchase_price FROM product_product WHERE product_tmpl_id = %s", (template.id,))
                     product_prices = cr.fetchall()
                     #product = product_obj.read(cr, uid, product_ids[0], ['list_price', 'manual_cost_price'], context=context)
                     list_price_diff = abs(template.list_price - vals.get('list_price', template.list_price))
-                    cost_price_diff = abs(product_prices[0][0] - vals.get('manual_cost_price', product_prices[0][0]))
+                    cost_price = product_prices[0][purchase_field_position] or 0
+                    cost_price_diff = abs(cost_price - vals.get('manual_cost_price', product_prices[0][0]))
                     tax_obj = self.pool['account.tax']
                     taxes = [tax.related_inc_tax_id for tax in template.taxes_id if tax.related_inc_tax_id]
                     taxes = tax_obj._unit_compute(cr, uid, taxes, vals['list_price'], product=template.id)
                     taxe_amount = sum([t['amount'] for t in taxes])
                     taxe_incl = vals['list_price'] + taxe_amount
                     vals['list_price_tax_inc'] = taxe_incl
-                    if list_price_diff > 0.1 or cost_price_diff > 0.1:
+                    if list_price_diff > 0.02 or cost_price_diff > 0.02:
                         import_price_from_supplier_file.delay(session, [template.id], vals)
                         _logger.info('Create import price job for products %s' % [template.id])
                     else:

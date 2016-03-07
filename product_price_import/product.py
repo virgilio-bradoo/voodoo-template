@@ -37,14 +37,12 @@ class MrpBom(orm.Model):
     def update_product_bom_price(self, cr, uid, ids, fields, context=None):
         product_obj = self.pool['product.product']
         for bom in self.browse(cr, uid, ids, context=context):
-            print "hhh", bom.name
             vals = {i: 0.0 for i in fields}
             for line in bom.bom_lines:
                 for key in fields:
                     vals[key] += getattr(line.product_id, key) * line.product_qty
             context['bom_updated'] = True
             product_obj.write(cr, uid, [bom.product_id.id], vals, context=context)
-            print "ok"
         return True
 
 class ProductProduct(orm.Model):
@@ -54,7 +52,7 @@ class ProductProduct(orm.Model):
         if context is None:
             context = {}
         super(ProductProduct, self).write(cr, uid, ids, vals, context=context)
-        price_fields = ['list_price', 'list_price_tax_inc', 'manual_cost_price']
+        price_fields = ['list_price', 'list_price_tax_inc']
         fields_to_update = list(set(price_fields).intersection(vals.keys()))
         if fields_to_update and not context.get('bom_updated', False):
             bom_obj = self.pool['mrp.bom']
