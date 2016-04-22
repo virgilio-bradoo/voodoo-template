@@ -76,15 +76,15 @@ class ProductProduct(orm.Model):
             digits_compute=dp.get_precision('Product Price')),
     }
 
-     def update_prestashop_quantities(self, cr, uid, ids, context=None):
-         super(ProductProduct, self).update_prestashop_quantities(
-             cr, uid, ids, context=context
-         )
+    def update_prestashop_quantities(self, cr, uid, ids, context=None):
+        super(ProductProduct, self).update_prestashop_quantities(
+            cr, uid, ids, context=context
+        )
         for product in self.browse(cr, SUPERUSER_ID, ids, context=context):
-             for supplierinfo in product.customers_supplierinfo_ids:
+            for supplierinfo in product.customers_supplierinfo_ids:
                 new_uid = self.get_record_id_user(cr, uid, supplierinfo.product_id.id, context=context)
                 self.browse(cr, new_uid, supplierinfo.product_id.id, context=context).update_prestashop_quantities()
-         return True
+        return True
 
     #fill purchase description with product name on creation(only on creation)
     def create(self, cr, uid, vals, context=None):
