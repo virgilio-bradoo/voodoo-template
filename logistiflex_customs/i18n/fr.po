@@ -1,0 +1,269 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* logistiflex_customs
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-04-21 14:35+0000\n"
+"PO-Revision-Date: 2016-04-21 14:35+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_res_partner_partial_delivery
+#: field:res.partner,partial_delivery:0
+msgid "Partial Delivery"
+msgstr "Livraison partielle"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Ligne de commande d'achat"
+
+#. module: logistiflex_customs
+#: help:prestashop.product.combination,quantity:0
+msgid "Last computed quantity to send on Prestashop."
+msgstr "Last computed quantity to send on Prestashop."
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_picking_in
+msgid "Incoming Shipments"
+msgstr "Bons de réception"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_intercompany_move_id
+#: field:stock.move,intercompany_move_id:0
+msgid "Intercomany Move"
+msgstr "Mouvement Inter-société"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_prestashop_delivery_carrier
+msgid "Prestashop Carrier"
+msgstr "Transporteur PrestaShop"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_queue_job
+msgid "Queue Job"
+msgstr "Queue Job"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_picking
+msgid "Picking List"
+msgstr "Opération de manutention"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_prestashop_backend
+msgid "Connector Backend"
+msgstr "Backend Connecteur"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_prestashop_product_combination
+#: model:ir.model,name:logistiflex_customs.model_prestashop_product_product
+msgid "PrestaShop Binding (abstract)"
+msgstr "PrestaShop Binding (abstract)"
+
+#. module: logistiflex_customs
+#: view:prestashop.delivery.carrier:0
+msgid "Etat prestashop"
+msgstr "Etat prestashop"
+
+#. module: logistiflex_customs
+#: view:stock.move:0
+msgid "Cancel Move"
+msgstr "Annuler le mouvement"
+
+#. module: logistiflex_customs
+#: view:product.product:0
+msgid "Prix achat (£)"
+msgstr "Prix achat (£)"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_picking_order_message_ids
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_picking_order_message_ids_3768
+#: field:stock.picking,order_message_ids:0
+#: field:stock.picking.out,order_message_ids:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: logistiflex_customs
+#: field:connector.checkpoint,company_id:0
+#: model:ir.model.fields,field_description:logistiflex_customs.field_connector_checkpoint_company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_connector_checkpoint
+msgid "Connector Checkpoint"
+msgstr "Point de contrôle"
+
+#. module: logistiflex_customs
+#: view:sale.order:0
+msgid "Force Create Picking"
+msgstr "Force Create Picking"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_product_supplierinfo
+msgid "Information about a product supplier"
+msgstr "Information sur le fournisseur de l'article"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_prestashop_product_combination_quantity
+#: field:prestashop.product.combination,quantity:0
+msgid "Computed Quantity"
+msgstr "Computed Quantity"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_date_planned_purchase
+#: field:stock.move,date_planned_purchase:0
+msgid "Purchase Date Planned"
+msgstr "Date prévue"
+
+#. module: logistiflex_customs
+#: view:stock.picking.in:0
+msgid "Status"
+msgstr "État"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_inventory_line
+msgid "Inventory Line"
+msgstr "Ligne d'inventaire"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_prestashop_backend_shipping_state_id
+#: model:ir.model.fields,field_description:logistiflex_customs.field_prestashop_delivery_carrier_shipping_state_id
+#: field:prestashop.backend,shipping_state_id:0
+#: field:prestashop.delivery.carrier,shipping_state_id:0
+msgid "Shipping state"
+msgstr "Shipping state"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_product_product
+msgid "Product"
+msgstr "Article"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_purchase_order
+msgid "Purchase Order"
+msgstr "Bon de commande"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_mrp_bom
+msgid "Bill of Material"
+msgstr "Nomenclature"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_logistiflex_customs_installed
+msgid "logistiflex_customs.installed"
+msgstr "logistiflex_customs.installed"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_partial_picking
+msgid "Partial Picking Processing Wizard"
+msgstr "Assistant de livraison partielle"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_product_product_pound_purchase_price
+#: field:product.product,pound_purchase_price:0
+msgid "Pound Purchase Price"
+msgstr "Pound Purchase Price"
+
+#. module: logistiflex_customs
+#: view:product.product:0
+msgid "Prix achat ($)"
+msgstr "Prix achat ($)"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_bom_id
+#: field:stock.move,bom_id:0
+msgid "Pack"
+msgstr "Pack"
+
+#. module: logistiflex_customs
+#: model:email.template,subject:logistiflex_customs.email_template_check_job
+msgid "Blocked jobs"
+msgstr "Blocked jobs"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_product_template
+msgid "Product Template"
+msgstr "Modèle d'article"
+
+#. module: logistiflex_customs
+#: model:email.template,body_html:logistiflex_customs.email_template_check_job
+msgid "\n"
+"Bonjour,\n"
+"\n"
+"Il semblerait que les jobs soient bloqués pour Logistiflex.\n"
+"Merci de jeter un oeil pour les débloquer le plus vite possible.\n"
+"Cordialement,\n"
+"OpenERP\n"
+"            "
+msgstr "\n"
+"Bonjour,\n"
+"\n"
+"Il semblerait que les jobs soient bloqués pour Logistiflex.\n"
+"Merci de jeter un oeil pour les débloquer le plus vite possible.\n"
+"Cordialement,\n"
+"OpenERP\n"
+"            "
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_move
+msgid "Stock Move"
+msgstr "Mouvement de stock"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_is_intercompany
+#: field:stock.move,is_intercompany:0
+msgid "Is Intercompany"
+msgstr "Is Intercompany"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_return_picking
+msgid "Return Picking"
+msgstr "Retour de marchandise"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_product_product_dollar_purchase_price
+#: field:product.product,dollar_purchase_price:0
+msgid "Dollar Purchase Price"
+msgstr "Prix d'achat (Dollars)"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_res_partner
+#: view:stock.picking.in:0
+msgid "Partner"
+msgstr "Partenaire"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_picking_out
+msgid "Delivery Orders"
+msgstr "Bons de livraisons"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_po_info
+#: field:stock.move,po_info:0
+msgid "Purchase Info"
+msgstr "Bon de commande"
+
+#. module: logistiflex_customs
+#: model:ir.model,name:logistiflex_customs.model_stock_change_product_qty
+msgid "Change Product Quantity"
+msgstr "Changer la quantité d'articles"
+

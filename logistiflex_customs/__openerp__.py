@@ -15,6 +15,7 @@ Add customizations for Logistiflex
         'sale_intercompany_auto',
         'account_invoice_intercompany',
         'email_template',
+        'purchase_supplier_delay',
     ],
     'data': [
         'views/data.xml',

@@ -7,6 +7,9 @@ from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 import time
 from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class StockPicking(Model):
@@ -149,10 +152,68 @@ class StockPickingIn(Model):
 class StockMove(Model):
     _inherit = 'stock.move'
 
+    def _get_purchase_info(self, cr, uid, ids, field_names=None, arg=False,
+                           context=None):
+        if not field_names:
+            field_names = []
+        if context is None:
+            context = {}
+        res = {}
+        for move in self.browse(cr, uid, ids, context=context):
+            res[move.id] = {}.fromkeys(field_names, '')
+            if (not move.state in ('auto', 'confirmed') or not move.picking_id or not
+                    move.picking_id.type == 'out'):
+                continue
+            intercompany_move_ids = self.search(cr, SUPERUSER_ID, [
+                                      ('is_intercompany', '=', True),
+                                      ('intercompany_move_id', '=', move.id),
+                                      ('state', 'in', ('auto', 'confirmed'))])
+            if intercompany_move_ids:
+                intercompany_infos = self.read(cr, SUPERUSER_ID, intercompany_move_ids[0], ['date_planned_purchase', 'po_info'], context=context)
+                res[move.id]['date_planned_purchase'] = intercompany_infos['date_planned_purchase']
+                continue
+            date = move.picking_id.min_date
+            cr.execute("""
+                SELECT sum(product_qty)
+                FROM stock_move m
+                    JOIN stock_picking p ON p.id = m.picking_id
+                WHERE p.type = 'out' AND m.product_id = %s
+                    AND p.min_date <= %s and m.state in ('auto', 'confirmed')
+            """, (move.product_id.id, date))
+            qty_needed_sql = cr.fetchall()
+            qty_needed = qty_needed_sql and qty_needed_sql[0][0]
+            cr.execute("""
+                SELECT po.name, m.product_qty, l.date_planned
+                FROM stock_move m 
+                    JOIN stock_picking p ON p.id = m.picking_id
+                    JOIN purchase_order_line l ON m.purchase_line_id = l.id
+                    JOIN purchase_order po ON po.id = l.order_id
+                WHERE p.type = 'in' AND m.product_id = %s
+                    AND m.purchase_line_id IS NOT NULL
+                    AND m.state = 'assigned'
+                ORDER BY l.date_planned asc
+            """, (move.product_id.id,))
+            in_qties_info = cr.fetchall()
+            for in_info in in_qties_info:
+                qty_needed -= in_info[1]
+                if qty_needed <= 0:
+                    res[move.id]['date_planned_purchase'] = in_info[2]
+                    res[move.id]['po_info'] = in_info[0]
+                    break
+            else:
+                res[move.id]['po_info'] = 'N/A'
+        return res
+
     _columns = {
         'bom_id': fields.many2one('mrp.bom', 'Pack'),
         'is_intercompany': fields.boolean('Is Intercompany'),
         'intercompany_move_id': fields.many2one('stock.move', 'Intercomany Move'),
+        'date_planned_purchase': fields.function(
+            _get_purchase_info, multi='purchase_info', type='date',
+            string='Purchase Date Planned'),
+        'po_info': fields.function(
+            _get_purchase_info, multi='purchase_info', type='char',
+            string='Purchase Info')
     }
 
 
