@@ -109,3 +109,14 @@ msgstr "Import des prix produits"
 msgid "Files has been created"
 msgstr "Des fichiers ont été créé"
 
+#. module: product_price_import
+#: model:ir.model.fields,field_description:product_price_import.field_product_product_fixed_price
+#: field:product.product,fixed_price:0
+msgid "Fixed Price"
+msgstr "Prix fixe"
+
+#. module: product_price_import
+#: help:product.product,fixed_price:0
+msgid "The price of the BOM won't be recompute if the price of a component changes"
+msgstr "Le prix de ce produit ne sera pas recalculé en fonction des composants de sa nomenclature."
+

@@ -37,6 +37,8 @@ class MrpBom(orm.Model):
     def update_product_bom_price(self, cr, uid, ids, fields, context=None):
         product_obj = self.pool['product.product']
         for bom in self.browse(cr, uid, ids, context=context):
+            if bom.product_id.fixed_price:
+                continue
             vals = {i: 0.0 for i in fields}
             for line in bom.bom_lines:
                 for key in fields:
@@ -47,6 +49,12 @@ class MrpBom(orm.Model):
 
 class ProductProduct(orm.Model):
     _inherit = "product.product"
+
+    _columns = {
+        'fixed_price': fields.boolean(
+            'Fixed Price',
+            help="The price of the BOM won't be recompute if the price of a component changes"),
+    }
 
     def write(self, cr, uid, ids, vals, context=None):
         if context is None:
@@ -71,4 +79,3 @@ class ProductProduct(orm.Model):
                 #product_parent_bom_ids = [bom.product_id.id for bom in bom_obj.browse(cr, uid, product_parent_bom_ids, context=context)]
                 bom_obj.update_product_bom_price(cr, uid, parent_bom_ids, fields_to_update, context=context)
         return True
-

@@ -31,11 +31,13 @@
  """,
  'depends': [
     'product',
-    'mrp'
+    'mrp',
+    'sale_tax_inc_exc',
  ],
  'data': [
     'wizard/import_product_price_view.xml',
     'wizard/file_wizard_view.xml',
+    'product_view.xml',
  ],
  'installable': True,
  'application': False,

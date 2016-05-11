@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="fixed_price_product_normal_form_view" model="ir.ui.view">
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="sale_tax_inc_exc.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="list_price_tax_inc" position="after">
+                    <field name="fixed_price" attrs="{'invisible': [('supply_method', '=', 'buy')]}"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
+
