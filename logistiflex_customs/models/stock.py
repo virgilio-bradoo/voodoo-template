@@ -244,6 +244,12 @@ class StockMove(Model):
 
     def action_cancel(self, cr, uid, ids, context=None):
         res = super(StockMove, self).action_cancel(cr, uid, ids, context=context)
+        picking_ids = self.pool['stock.picking'].search(
+                cr, uid, [('move_lines', 'in', ids)], context=context)
+        picking_ids = list(set(picking_ids))
+        for picking_id in picking_ids:
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_write(uid, 'stock.picking', picking_id, cr)
         intercompany_linked_move_ids = self.search(cr, SUPERUSER_ID, [
                                        ('is_intercompany', '=', True),
                                        ('intercompany_move_id', 'in', ids),])
@@ -385,7 +391,8 @@ class StockPartialPicking(TransientModel):
             intercompany_move_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('is_intercompany', '=', True),
                                       ('intercompany_move_id', '=', move_id),
-                                      ('state', '!=', 'done'),])
+                                      ('state', '!=', 'done'),
+                                      ('auto_validate', '=', False),])
             move_in_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('picking_id.type', '=', 'in'),
                                       ('move_dest_id', '=', move_id),
