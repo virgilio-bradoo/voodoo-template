@@ -32,6 +32,7 @@
                 <field name="state" position="after">
                     <field name="date_planned_purchase" />
                     <field name="po_info" />
+                    <button name="cancel_move_confirmation" states="assigned,confirmed" string="Cancel Move" type="object" icon="gtk-cancel"/>
                 </field>
             </field>
         </record>

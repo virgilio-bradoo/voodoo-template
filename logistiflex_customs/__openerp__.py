@@ -27,6 +27,7 @@ Add customizations for Logistiflex
         'security/checkpoint.xml',
         'views/partner.xml',
         'views/product.xml',
+        'wizard/cancel_stock_move.xml',
     ],
     'demo_xml': [],
     'test': [],

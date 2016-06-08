@@ -7,6 +7,7 @@ from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 import time
 from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools.translate import _
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -14,6 +15,17 @@ _logger = logging.getLogger(__name__)
 
 class StockPicking(Model):
     _inherit = 'stock.picking'
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        if context is None:
+            context = {}
+        pick = self.browse(cr, uid, id, context=context)
+        if context.get('copy_origin', False):
+            if default is None:
+                default = {}
+            default['origin'] = pick.origin
+        return  super(StockPicking, self).copy(cr, uid, id, default=default,
+                                             context=context)
 
     def _get_order_message_ids(self, cr, uid, ids, field_name, arg,
                                context=None):
@@ -33,6 +45,10 @@ class StockPicking(Model):
         'order_message_ids': fields.function(
             _get_order_message_ids, type='many2many', obj='mail.message',
         ),
+    }
+
+    _defaults = {
+        'move_type': 'one',
     }
 
     def action_done(self, cr, uid, ids, context=None):
@@ -112,6 +128,10 @@ class StockPicking(Model):
 class StockPickingOut(Model):
     _inherit = 'stock.picking.out'
 
+    _defaults = {
+        'move_type': 'one',
+    }
+
     def _get_order_message_ids(self, cr, uid, ids, field_name, arg,
                                context=None):
         return self.pool.get('stock.picking')._get_order_messsage_ids(
@@ -147,6 +167,10 @@ class StockPickingIn(Model):
         return self.pool.get('stock.picking').validate(
             cr, uid, ids, context=context
         )
+
+    _defaults = {
+        'move_type': 'one',
+    }
 
 
 class StockMove(Model):
@@ -240,7 +264,31 @@ class StockMove(Model):
                                              move_dest.picking_id.id, cr)
         return  super(StockMove, self).write(cr, uid, ids, vals,
                                              context=context)
-                
+
+    def cancel_move_confirmation(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, 'Cancel one move at a time'
+        ir_model_data = self.pool.get('ir.model.data')
+        move = self.browse(cr, uid, ids[0], context=context)
+        cancel_wizard_obj = self.pool['cancel.stock.move']
+        vals = {
+            'comment': 'Etes vous certain de vouloir annuler %s' % (move.product_id.default_code),
+#            'move_id': ids[0],
+        }
+        view_id = ir_model_data.get_object_reference(cr, uid, 'logistiflex_customs', 'view_cancel_stock_move_wizard')[1]
+        wizard_id = cancel_wizard_obj.create(cr, uid, vals, context=context)
+        return {
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'cancel.stock.move',
+            'type': 'ir.actions.act_window',
+            'res_id': wizard_id,
+            'views': [(view_id, 'form')],
+            'view_id':view_id,
+            'target': 'new',
+            'context': context,
+            'nodestroy': True,
+        }
+
 
     def action_cancel(self, cr, uid, ids, context=None):
         res = super(StockMove, self).action_cancel(cr, uid, ids, context=context)

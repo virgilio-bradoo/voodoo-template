@@ -267,3 +267,18 @@ msgstr "Bon de commande"
 msgid "Change Product Quantity"
 msgstr "Changer la quantité d'articles"
 
+#. module: logistiflex_customs
+#: view:cancel.stock.move:0
+msgid "Confirm cancel"
+msgstr "Confirmer l'annulation"
+
+#. module: logistiflex_customs
+#: view:cancel.stock.move:0
+#: model:ir.actions.act_window,name:logistiflex_customs.action_cancel_stock_move_wizard
+msgid "Cancel Stock Move"
+msgstr "Annumation du mouvement"
+
+#. module: logistiflex_customs
+#: view:cancel.stock.move:0
+msgid "Cancel"
+msgstr "Annuler"

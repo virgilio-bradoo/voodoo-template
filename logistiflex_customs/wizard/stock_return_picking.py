@@ -126,7 +126,8 @@ class stock_return_picking(osv.osv_memory):
 
     def create_returns(self, cr, uid, ids, context=None):
         if context is None:
-            context = {} 
+            context = {}
+        context['copy_origin'] = True
         move_obj = self.pool['stock.move']
         pick_obj = self.pool['stock.picking']
         record_id = context and context.get('active_id', False) or False
