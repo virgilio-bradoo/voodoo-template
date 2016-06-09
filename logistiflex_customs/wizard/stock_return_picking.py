@@ -48,11 +48,13 @@ class stock_return_picking(osv.osv_memory):
             new_pick_name = self.pool.get('ir.sequence').get(
                 cr, uid, 'stock.picking.in')
             picking_name = '%s-%s-intercompany-return' % (new_pick_name, pick.name)
+            origin = pick.origin
             return_picking_vals = {
                 'name': picking_name,
                 'type': 'in',
                 'date':date_cur, 
                 'invoice_state': 'none',
+                'origin': origin,
                 'partner_id': first_sup_move.picking_id and \
                               first_sup_move.picking_id.partner_id and \
                               first_sup_move.picking_id.partner_id.id or False,
