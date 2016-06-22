@@ -24,6 +24,8 @@ class StockPicking(Model):
             if default is None:
                 default = {}
             default['origin'] = pick.origin
+        if 'carrier_tracking_ref' not in default:
+            default['carrier_tracking_ref'] = ''
         return  super(StockPicking, self).copy(cr, uid, id, default=default,
                                              context=context)
 
