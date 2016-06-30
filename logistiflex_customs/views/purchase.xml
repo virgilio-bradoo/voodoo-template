@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="custom_purchase_view_form" model="ir.ui.view">
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase_auto_merge.purchase_order_form" />
+            <field name="arch" type="xml">
+                <button name="unlock" position="after">
+                    <button name="update_po_quantities" string="Update purchase order" type="object" class="oe_highlight" attrs="{'invisible': [('lock', '=', False)]}"/>
+                </button>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

@@ -16,6 +16,7 @@ Add customizations for Logistiflex
         'account_invoice_intercompany',
         'email_template',
         'purchase_supplier_delay',
+        'purchase_auto_merge',
     ],
     'data': [
         'views/data.xml',
@@ -27,6 +28,7 @@ Add customizations for Logistiflex
         'security/checkpoint.xml',
         'views/partner.xml',
         'views/product.xml',
+        'views/purchase.xml',
         'wizard/cancel_stock_move.xml',
     ],
     'demo_xml': [],

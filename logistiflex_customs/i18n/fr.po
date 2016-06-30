@@ -282,3 +282,8 @@ msgstr "Annumation du mouvement"
 #: view:cancel.stock.move:0
 msgid "Cancel"
 msgstr "Annuler"
+
+#. module: logistiflex_customs
+#: view:purchase.order:0
+msgid "Update purchase order"
+msgstr "Actualiser la commande"

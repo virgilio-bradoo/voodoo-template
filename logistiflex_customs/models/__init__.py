@@ -9,3 +9,4 @@ import mrp
 import job
 import remove_needaction
 import partner
+import procurement

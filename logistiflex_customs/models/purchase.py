@@ -36,6 +36,57 @@ class PurchaseOrder(Model):
                 return False
         return res
 
+    def update_po_quantities(self, cr, uid, ids, context=None):
+        proc_obj = self.pool['procurement.order']
+        for po in self.browse(cr, uid, ids, context=context):
+            if po.state != 'draft' or not po.lock:
+                continue
+#            product_qties = {}
+            for line in po.order_line:
+                if not line.product_id:
+                    continue
+                product = line.product_id
+                if not (product.procure_method == 'make_to_stock' and
+                        product.supply_method == 'buy'):
+                    continue
+#                diff = 0.0
+#                if product_qties.get(product.id, False):
+#                    product_qties[product.id] += line.product_qty
+#                else:
+#                    product_qties[product.id] = line.product_qty or 0.0
+                if product.virtual_available <= 0:
+                    continue
+                #Carefule regle de stock avec min??? normal d'avoir du virtual qty
+                diff = product.virtual_available
+                orderpoint_ids = self.pool['stock.warehouse.orderpoint'].search(
+                        cr, uid,
+                        [('product_id', '=', product.id),   
+                         ('company_id', '=', po.company_id.id)],
+                        context=context)
+                if orderpoint_ids:
+                    continue
+                if diff >= line.product_qty:
+                    line.unlink()
+                else:
+                    for proc in line.procurement_ids:
+                        if proc.product_qty <= diff:
+                            proc.action_cancel()
+                            diff -= proc.product_qty
+                        else:
+                            rest = proc.product_qty - diff
+                            proc.write({'product_qty': rest})
+                            proc.move_id.write({'product_qty': rest})
+                            line.write({'product_qty': line.product_qty - diff})
+        return True
+
+    def check_po_quantities(self, cr, uid, context=None):
+        po_ids = self.search(cr, uid,
+                             [('state', '=', 'draft'), ('lock', '=', True)],
+                             context=context)
+        self.update_po_quantities(cr, uid, po_ids, context=context)
+        return True
+                        
+
 class PurchaseOrderLine(Model):
     _inherit = 'purchase.order.line'
 
