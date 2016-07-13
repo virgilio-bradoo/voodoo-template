@@ -199,15 +199,17 @@ class StockMove(Model):
                 res[move.id]['date_planned_purchase'] = intercompany_infos['date_planned_purchase']
                 continue
             date = move.picking_id.min_date
+            qty_in_stock = move.product_id.qty_available
             cr.execute("""
                 SELECT sum(product_qty)
                 FROM stock_move m
                     JOIN stock_picking p ON p.id = m.picking_id
                 WHERE p.type = 'out' AND m.product_id = %s
-                    AND p.min_date <= %s and m.state in ('auto', 'confirmed')
+                    AND ((p.min_date <= %s and m.state in ('auto', 'confirmed')) OR m.state = 'assigned')
             """, (move.product_id.id, date))
             qty_needed_sql = cr.fetchall()
             qty_needed = qty_needed_sql and qty_needed_sql[0][0]
+            qty_needed -= qty_in_stock
             cr.execute("""
                 SELECT po.name, m.product_qty, l.date_planned
                 FROM stock_move m 
