@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <field name="active" position="after">
                     <field name="partial_delivery"/>
+                    <field name="product_geolocation"/>
                 </field>
             </field>
         </record>

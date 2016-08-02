@@ -232,6 +232,12 @@ class StockMove(Model):
                 res[move.id]['po_info'] = 'N/A'
         return res
 
+    def _get_product_geolocation_change(self, cr, uid, ids, context=None):
+        return self.pool.get('stock.move').search(
+                    cr, uid, [('product_id', 'in', ids),
+                              ('state', 'not in', ('cancel', 'done'))],
+                    context=context)
+
     _columns = {
         'bom_id': fields.many2one('mrp.bom', 'Pack'),
         'is_intercompany': fields.boolean('Is Intercompany'),
@@ -241,7 +247,16 @@ class StockMove(Model):
             string='Purchase Date Planned'),
         'po_info': fields.function(
             _get_purchase_info, multi='purchase_info', type='char',
-            string='Purchase Info')
+            string='Purchase Info'),
+        'product_geolocation': fields.related(
+            'product_id',
+            'geolocation',
+            type='char',
+            string="Geolocation",
+            store={
+                'product.product': (_get_product_geolocation_change, ['geolocation'], 20),
+                'stock.move': (lambda self, cr, uid, ids, c={}: ids, ['product_id'], 20),
+            })
     }
 
 

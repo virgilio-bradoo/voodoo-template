@@ -54,6 +54,32 @@ class ProductProduct(orm.Model):
             res[product.id] = quantity
         return res
 
+    def update_geolocation(self, cr, uid, ids, context=None):
+        for product in self.browse(cr, uid, ids, context=context):
+            if product.seller_info_id and \
+                    product.seller_info_id.supplier_product_id:
+                geolocation = self.browse(cr, SUPERUSER_ID, product.id).seller_info_id.supplier_product_id.geolocation or ''
+            elif product.seller_info_id:
+                geolocation = product.seller_id and \
+                              product.seller_id.product_geolocation or ''
+            product.write({'geolocation': geolocation})
+        return True
+
+    def _get_original_default_code(self, cr, uid, ids, field_name, arg,
+                              context=None):
+        if context is None:
+            context = {}
+        res = {}
+        for product in self.browse(cr, uid, ids, context=context):
+            if product.prestashop_bind_ids:
+                original_default_code = product.prestashop_bind_ids[0].reference
+            elif product.prestashop_combinations_bind_ids:
+                original_default_code = product.prestashop_combinations_bind_ids[0].reference
+            else:
+                original_default_code = product.default_code
+            res[product.id] = original_default_code or ''
+        return res
+
     _columns = {
         'suppliers_immediately_usable_qty': fields.function(
             _suppliers_usable_qty,
@@ -74,6 +100,12 @@ class ProductProduct(orm.Model):
         'pound_purchase_price': fields.float(
             'Pound Purchase Price',
             digits_compute=dp.get_precision('Product Price')),
+        'geolocation': fields.char('Geolocation'),
+        'original_default_code': fields.function(
+            _get_original_default_code,
+            type='char',
+            string='Original Default Code'),
+
     }
 
     def update_prestashop_quantities(self, cr, uid, ids, context=None):
@@ -114,8 +146,20 @@ class ProductProduct(orm.Model):
                         context=context)
                     change_qty_wizard.change_product_qty(cr, uid, [wiz_id],
                         context=context)
-        return super(ProductProduct, self
+        res = super(ProductProduct, self
                      ).write(cr, uid, ids, vals, context=context)
+        if vals.get('geolocation', False):
+            supplier_obj = self.pool['product.supplierinfo']
+            company_obj = self.pool['res.company']
+            supplier_info_ids = supplier_obj.search(
+                    cr, SUPERUSER_ID, [('supplier_product_id', 'in', ids)],
+                    context=context)
+            product_company_dict = {}
+            suppliers_admin = supplier_obj.browse(cr, SUPERUSER_ID, supplier_info_ids, context=context)
+            product_ids = [sup.product_id.id for sup in suppliers_admin]
+            if product_ids:
+                self.write(cr, SUPERUSER_ID, product_ids, {'geolocation': vals.get('geolocation')}, context=context)
+        return res
 
     def create_automatic_op(self, cr, uid, product_ids, context=None):
         if context is None:
@@ -268,6 +312,10 @@ class ProductProduct(orm.Model):
 class ProductSupplierinfo(orm.Model):
     _inherit = 'product.supplierinfo'
 
+    _columns = {
+#        'product_location': fields.related('name', 'product_location', type='char', string='Products Location', store=True)
+    }
+
     def write(self, cr, uid, ids, vals, context=None):
         product_obj = self.pool['product.product']
         res = super(ProductSupplierinfo, self
@@ -283,6 +331,11 @@ class ProductSupplierinfo(orm.Model):
                     product_obj.write(cr, uid, [sup.product_id.id],
                                       {'procure_method': 'make_to_stock'},
                                       context=context)
+        if vals.get('name', False) or vals.get('supplier_product_id'):
+            suppliers = self.browse(cr, uid, ids, context=context)
+            product_ids = [sup.product_id.id for sup in suppliers]
+            self.pool['product.product'].update_geolocation(
+                    cr, uid, product_ids, context=context)
         return res
 
     def create(self, cr, uid, vals, context=None):
@@ -291,6 +344,8 @@ class ProductSupplierinfo(orm.Model):
             product_obj.write(cr, uid, [vals['product_id']],
                               {'procure_method': 'make_to_order'},
                               context=context)
+        self.pool['product.product'].update_geolocation(
+                cr, uid, [vals.get('product_id')], context=context)
         return super(ProductSupplierinfo, self
                      ).create(cr, uid, vals, context=context)
 

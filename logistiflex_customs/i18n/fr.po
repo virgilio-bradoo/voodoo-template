@@ -287,3 +287,22 @@ msgstr "Annuler"
 #: view:purchase.order:0
 msgid "Update purchase order"
 msgstr "Actualiser la commande"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_res_partner_product_geolocation
+#: field:res.partner,product_geolocation:0
+msgid "Products Location"
+msgstr "Géolocalisation"
+
+#. module: logistiflex_customs
+#: model:ir.model.fields,field_description:logistiflex_customs.field_product_product_geolocation
+#: model:ir.model.fields,field_description:logistiflex_customs.field_stock_move_product_geolocation
+#: field:product.product,geolocation:0
+#: field:stock.move,product_geolocation:0
+msgid "Geolocation"
+msgstr "Géolocalisation"
+
+#. module: logistiflex_customs
+#: view:product.product:0
+msgid "Product Location"
+msgstr "Géolocalisation"
