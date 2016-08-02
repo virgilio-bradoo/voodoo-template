@@ -28,7 +28,20 @@ from datetime import datetime, timedelta
 class QueueJob(orm.Model):
     _inherit = 'queue.job'
 
+    _columns = {
+        'retried_by_cron': fields.integer(''),
+    }
+
+    _default = {
+        'retried_by_cron': 0,
+    }
+
+    # Job may be blocked, rarely, we need to be warned
+    # Some job are blocked at start state also, need to unblock it.
+    # Re also put back to pending failed job, case it was a temporary problem
+    # In next version, we can drop it all as the connector is more mature now.
     def check_last_job_done(self, cr, uid, delay=False, context=None):
+        # Check if jobs are blocked
         last_job_done_ids = self.search(cr, uid, [('state', '=', 'done'), ('date_done', '!=', False)], limit=1, order='date_done desc')
         last_job = self.browse(cr, uid, last_job_done_ids, context=context)[0]
         last_date = last_job.date_done
@@ -43,5 +56,21 @@ class QueueJob(orm.Model):
             tmpl_obj = self.pool['email.template']
             template_id = tmpl_obj.search(cr, uid, [('name', '=', 'Check Queue Job')], context=context)[0]
             tmpl_obj.send_mail(cr, uid, template_id, last_job.id, force_send=True, context=context)
+        # Unblock started jobs
+        started_job_ids = self.search(cr, uid, [('state', '=', 'started')], context=context)
+        one_hour_ago = now - timedelta(hours=1)
+        one_hour_ago = one_hour_ago.strftime('%Y-%m-%d %H:%M:%S')
+        for job in self.browse(cr, uid, started_job_ids, context=context):
+            if job.date_started < one_hour_ago:
+                job.requeue()
+        # Replay failed job, twice max
+        failed_job_ids1 = self.search(cr, uid, [('state', '=', 'failed'), ('retried_by_cron', '=', 0)], context=context)
+        failed_job_ids2 = self.search(cr, uid, [('state', '=', 'failed'), ('retried_by_cron', '=', 1)], context=context)
+        if failed_job_ids1:
+            self.requeue(cr, uid, failed_job_ids1, context=context)
+            self.write(cr, uid, failed_job_ids1, {'retried_by_cron': 1}, context=context)
+        if failed_job_ids2:
+            self.requeue(cr, uid, failed_job_ids2, context=context)
+            self.write(cr, uid, failed_job_ids2, {'retried_by_cron': 2}, context=context)
         return True
 
