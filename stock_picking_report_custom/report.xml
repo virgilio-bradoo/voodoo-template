@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="stock.report_picking_list_out" model="ir.actions.report.xml">
+            <field name="report_file">stock_picking_report_custom/delivery_order.mako</field>
+            <field name="webkit_header" ref="base_headers_webkit.base_minimum_reports_portrait_header"/>
+        </record>
+
+    <report id="stock.report_picking_list_in"
+            name="webkit.delivery_slip_in"
+            auto="False"
+            model="stock.picking.in"
+            file="stock_picking_report_custom/incoming_shipment_order.mako"
+            string="Incoming Shipment"
+            report_type="webkit"
+            header="True"/>
+
+    </data>
+
+    <data noupdate="1">
+        <record id="stock.report_picking_list_in" model="ir.actions.report.xml">
+           <field name="webkit_header" ref="base_headers_webkit.base_minimum_reports_portrait_header"></field>
+        </record>
+    </data>
+
+
+</openerp>
