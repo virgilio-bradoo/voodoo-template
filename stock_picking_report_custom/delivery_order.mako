@@ -84,7 +84,15 @@
             %for line in picking.move_lines:
                 <tr class="line">
                     <td style="text-align:left; " >${ line.name }</td>
+                %if line.state in ('waiting', 'confirmed'):
+                    <td style="text-align:left; " >${_('Waiting')}</td>
+                %elif line.state == 'assigned':
+                    <td style="text-align:left; " >${_('Ready')}</td>
+                %elif line.state == 'done':
+                    <td style="text-align:left; " >${_('Done')}</td>
+                %else:
                     <td style="text-align:left; " >${ line.state or ''}</td>
+                % endif
                     <td style="text-align:center; " >${ line.product_id.original_default_code or ''}</td>
                     <td style="text-align:center; " >${ line.product_geolocation or ''}</td>
                     <td class="amount" >${ formatLang(line.product_qty) } ${line.product_uom.name}</td>
