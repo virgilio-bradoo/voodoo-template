@@ -51,21 +51,26 @@ def inactive_record(session, model_name, backend_id):
     adapter = env.get_connector_unit(GenericAdapter)
     print len(record_ids), [min(ids), max(ids)]
     a = 0
-    limit = 5000
+    limit = 1500
     while ids[a:limit]:
-        to_unactive = []
-    #for id in ids:
-        filters = {
-            'filter[id]': [min(ids[a:limit]),max(ids[a:limit])],
-        }
-        presta_ids = adapter.search(filters)
-        to_unactive = list(set(ids[a:limit]) - set(presta_ids))
-        if to_unactive:
-            presta_ids = obj.search(session.cr, session.uid, [('prestashop_id', 'in', to_unactive), ('backend_id', '=', backend_id)])
-            obj.write(session.cr, session.uid, presta_ids, {'active': False})
-        a += 5000
-        limit += 5000
+        try:
+            to_unactive = []
+        #for id in ids:
+            filters = {
+                'filter[id]': [min(ids[a:limit]),max(ids[a:limit])],
+            }
+            presta_ids = adapter.search(filters)
+            to_unactive = list(set(ids[a:limit]) - set(presta_ids))
+            if to_unactive:
+                presta_ids = obj.search(session.cr, session.uid, [('prestashop_id', 'in', to_unactive), ('backend_id', '=', backend_id)])
+                obj.write(session.cr, session.uid, presta_ids, {'active': False})
+                session.cr.commit()
+        except:
+            pass
+        a += 1500
+        limit += 1500
     return True
+
 
 
 
