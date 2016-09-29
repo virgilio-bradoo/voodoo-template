@@ -170,6 +170,11 @@ class StockPickingIn(Model):
             cr, uid, ids, context=context
         )
 
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('carrier_tracking_ref', False):
+            vals.pop('carrier_tracking_ref')
+        return super(StockPickingIn, self).create(cr, uid, vals, context=context)
+
     _defaults = {
         'move_type': 'one',
     }
