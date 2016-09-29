@@ -2,6 +2,8 @@ from openerp import netsvc
 from openerp.osv import orm, fields
 from openerp.addons import decimal_precision as dp
 from openerp import SUPERUSER_ID
+from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.connector.queue.job import job
 
 
 class PrestashopProductProduct(orm.Model):
@@ -56,13 +58,15 @@ class ProductProduct(orm.Model):
 
     def update_geolocation(self, cr, uid, ids, context=None):
         for product in self.browse(cr, uid, ids, context=context):
+            geolocation = ''
             if product.seller_info_id and \
                     product.seller_info_id.supplier_product_id:
                 geolocation = self.browse(cr, SUPERUSER_ID, product.id).seller_info_id.supplier_product_id.geolocation or ''
             elif product.seller_info_id:
                 geolocation = product.seller_id and \
                               product.seller_id.product_geolocation or ''
-            product.write({'geolocation': geolocation})
+            if geolocation:
+                product.write({'geolocation': geolocation})
         return True
 
     def _get_original_default_code(self, cr, uid, ids, field_name, arg,
@@ -344,8 +348,13 @@ class ProductSupplierinfo(orm.Model):
             product_obj.write(cr, uid, [vals['product_id']],
                               {'procure_method': 'make_to_order'},
                               context=context)
-        self.pool['product.product'].update_geolocation(
-                cr, uid, [vals.get('product_id')], context=context)
-        return super(ProductSupplierinfo, self
-                     ).create(cr, uid, vals, context=context)
+        res = super(ProductSupplierinfo, self).create(cr, uid, vals, context=context)
+        # we delay it because of a problem when creating a product and supplierinfo together.
+        # We should check if problem persist in next version and try to remove the job dependence here
+        session = ConnectorSession(cr, uid, context=context)
+        update_geolocation_job.delay(session, vals.get('product_id'))
+        return res
 
+@job
+def update_geolocation_job(session, product_id):
+    session.pool['product.product'].update_geolocation(session.cr, session.uid, [product_id])
