@@ -146,7 +146,16 @@ class stock_return_picking(osv.osv_memory):
                 cr, SUPERUSER_ID, [('is_intercompany', '=', True),
                                    ('intercompany_move_id', '=', original_move.id)])
             if intercompany_linked_move_ids:
+                # TODO Quick fix, review in next version
                 if len(intercompany_linked_move_ids) > 1:
+                    intercompany_return_ids = move_obj.search(
+                        cr, SUPERUSER_ID, [('id', 'in', intercompany_linked_move_ids),
+                                           ('location_id', '=', 9)])
+                    if intercompany_return_ids:
+                        return_moves = move_obj.browse(cr, SUPERUSER_ID, intercompany_return_ids, context=context)
+                        tot_return_qty = [r.product_qty for r in return_moves]
+                        if tot_return_qty >= line.quantity:
+                            raise osv.except_osv(('Erreur'), ("Vous avez deja effectue un retour pour ce produit."))
                     raise
                 inter_move = move_obj.browse(
                     cr, SUPERUSER_ID, intercompany_linked_move_ids[0],
