@@ -211,12 +211,12 @@ td.vat {
     <table class="basic_table" width="100%">
         <tr>
             <th class="date">${_("Invoice Date")}</td>
-            <th style="text-align:center">${_("Payment Term")}</td>
+            <th style="text-align:center">${_("Payment Method")}</td>
             <th style="text-align:center">${_("Our reference")}</td>
         </tr>
         <tr>
             <td class="date">${formatLang(inv.date_invoice, date=True)}</td>
-            <td style="text-align:center">${inv.payment_term and inv.payment_term.note or ''}</td>
+            <td style="text-align:center">${inv.sale_ids and inv.sale_ids[0].payment_method_id and inv.sale_ids[0].payment_method_id.name or ''}</td>
             <td style="text-align:center">${inv.origin or ''}</td>
         </tr>
     </table>
@@ -226,8 +226,7 @@ td.vat {
         <thead>
             <tr>
                 <th>${_("Description")}</th>
-                <th>${_("Qty")}</th>
-                <th>${_("UoM")}</th>
+                <th colspan="2">${_("Qty")}</th>
                 <th>${_("Unit Price")}</th>
                 <th>${_("Taxes")}</th>
                 <th>${_("Disc.(%)")}</th>
@@ -239,10 +238,9 @@ td.vat {
             <tr>
                 <td class="align_top"><div class="nobreak">${line.name.replace('\n','<br/>') or '' | n}
                 </div></td>
-                <td class="amount align_top">${formatLang(line.quantity or 0.0,digits=get_digits(dp='Account'))}</td>
-                <td class="amount align_top">${line.uos_id and line.uos_id.name or ''}</td>
+                <td class="amount align_top" colspan="2">${formatLang(line.quantity or 0.0,digits=get_digits(dp='Account'))}</td>
                 <td class="amount align_top">${formatLang(line.price_unit)}</td>
-                <td class="align_top" style="font-style:italic; font-size: 10;text-align:center;" >${ ', '.join([ tax.description or tax.name for tax in line.invoice_line_tax_id ])}</td>
+                <td class="align_top" style="font-style:italic; font-size: 10;text-align:center;" width="10%">${ ', '.join([ tax.description or tax.name for tax in line.invoice_line_tax_id ])}</td>
                 <td class="amount align_top" width="10%">${line.discount and formatLang(line.discount, digits=get_digits(dp='Account')) or ''} ${line.discount and '%' or ''}</td>
                 <td class="amount align_top" width="13%">${formatLang(line.price_subtotal, digits=get_digits(dp='Account'))} ${inv.currency_id.symbol}</td>
             </tr>
