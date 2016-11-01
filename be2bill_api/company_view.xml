@@ -14,7 +14,17 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@string='Configuration']" position="after">
                     <page string="Be2bill Info">
-                        <field name="be2bill_account_ids"/>
+                        <field name="be2bill_account_ids">
+                            <tree>
+                                <field name="login"/>
+                                <field name="email_to"/>
+                            </tree>
+                            <form>
+                                <field name="login"/>
+                                <field name="password" password="True"/>
+                                <field name="email_to"/>
+                            </form>
+                        </field>
                     </page>
                 </xpath>
             </field>
