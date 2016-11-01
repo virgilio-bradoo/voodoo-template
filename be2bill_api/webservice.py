@@ -34,11 +34,11 @@ def get_hash(password, params):
 
 
 @job
-def send_file_by_email(session, company_id, date, compression='ZIP', version='2.0'):
-    company = session.browse('res.company', company_id)
-    login = company.be2bill_login
-    password = company.be2bill_password
-    email_to = company.be2bill_email_to
+def send_file_by_email(session, account_id, date, compression='ZIP', version='2.0'):
+    account = session.browse('be2bill.account', account_id)
+    login = account.login
+    password = account.password
+    email_to = account.email_to
     data = build_data(login, password, date, email_to, compression=compression, version=version)
     req = requests.post(URL, data=data)
     print req.text

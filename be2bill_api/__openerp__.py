@@ -34,6 +34,8 @@
      'file_email',
  ],
  'data': [
+      'company_view.xml',
+      'security/ir.model.access.csv',
       'data.xml',
  ],
  'installable': True,

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_be2bill_account_salesman,be2bill.account.salesman,model_be2bill_account,base.group_sale_salesman,1,0,0,0
+access_be2bill_account_sale_manager,be2bill.account.sale.manager,model_be2bill_account,base.group_sale_manager,1,1,1,1

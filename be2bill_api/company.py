@@ -26,32 +26,43 @@ from openerp.addons.connector.session import ConnectorSession
 import datetime
 from datetime import timedelta
 
+class Be2billAccount(orm.Model):
+    _name = "be2bill.account"
+
+    _columns = {
+        'login': fields.char('Be2Bill Login'),
+        'password': fields.char('Be2Bill Password'),
+        'email_to': fields.char('Be2Bill Email TO'),
+        'company_id': fields.many2one('res.company', string='Company')
+    }
+
 
 class ResCompany(orm.Model):
     _inherit = "res.company"
 
     _columns = {
-        'be2bill_login': fields.char('Be2Bill Login'),
-        'be2bill_password': fields.char('Be2Bill Password'),
-        'be2bill_email_to': fields.char('Be2Bill Email TO'),
+        'be2bill_account_ids': fields.one2many('be2bill.account', 'company_id',
+            string='Be2bill Accounts')
     }
 
     def _scheduler_be2bill_get_file(self, cr, uid, context=None):
         session = ConnectorSession(cr, uid, context=context)
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_ids = self.search(cr, uid, [('id', '=', user.company_id.id)], context=context)
-        for company_id in company_ids:
-            yesterday = datetime.date.today() - timedelta(days=1)
-            date = yesterday.isoformat()
-            send_file_by_email.delay(session, company_id, date)
+        yesterday = datetime.date.today() - timedelta(days=1)
+        date = yesterday.isoformat()
+        for company in self.browse(cr, uid, company_ids, context=context):
+            for account in company.be2bill_account_ids:
+                send_file_by_email.delay(session, account.id, date)
         return True
 
     def get_file_manually(self, cr, uid, date, context=None):
         session = ConnectorSession(cr, uid, context=context)
         user = self.pool['res.users'].browse(cr, uid, uid, context=context)
         company_ids = self.search(cr, uid, [('id', '=', user.company_id.id)], context=context)
-        for company_id in company_ids:
-            send_file_by_email(session, company_id, date)
+        for company in self.browse(cr, uid, company_ids, context=context):
+            for account in company.be2bill_account_ids:
+                send_file_by_email(session, account.id, date)
         return True
 
 
