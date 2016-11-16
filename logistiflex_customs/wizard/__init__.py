@@ -1,3 +1,4 @@
 import stock_change_product_qty
 import stock_return_picking
 import cancel_stock_move
+import stock_splitinto

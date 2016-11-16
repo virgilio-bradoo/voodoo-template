@@ -406,6 +406,41 @@ class StockMove(Model):
                 res['location_id'] = location_id
         return res
 
+    def copy(self, cr, uid, id, default=None, context=None):
+        if context is None:
+            context = {}
+        new_id = super(StockMove, self).copy(cr, uid, id, default=default,
+                                             context=context)
+        if context.get('split_tracking'):
+            print 'kk'
+            context.pop('split_tracking')
+            supplier_inter_move_ids = self.search(cr, SUPERUSER_ID,
+                [('intercompany_move_id', '=', id)])
+            if supplier_inter_move_ids:
+                new_uid = self.get_record_id_user(cr, uid,
+                    supplier_inter_move_ids[0], context=context)
+                default_vals = {
+                    'product_qty': default.get('product_qty'),
+                    'product_uos_qty': default.get('product_uos_qty'),
+                    'state': default.get('state'),
+                    'product_uos': default.get('product_uos'),
+                    'is_intercompany': True,
+                    'intercompany_move_id': new_id,
+                }
+                inter_supp_move = self.browse(cr, new_uid,
+                    supplier_inter_move_ids[0], context=context)
+                old_qty = inter_supp_move.product_qty
+                if old_qty <= default.get('product_qty'):
+                    raise
+                new_vals = {
+                    'product_qty': old_qty  - default.get('product_qty'),
+                    'product_uos_qty': old_qty  - default.get('product_qty'),
+                }
+                inter_supp_move.write(new_vals)
+                self.copy(cr, new_uid, supplier_inter_move_ids[0],
+                    default_vals, context=context)
+        return new_id
+
 
 class StockPartialPicking(TransientModel):
     _inherit = 'stock.partial.picking'
