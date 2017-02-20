@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <report
+            auto="False"
+            id="inventory_value_report"
+            model="inventory.value"
+            name="inventory.value"
+            file="inventory_value/report/inventory_value.mako"
+            string="Inventory"
+            attachment="object.name"
+            attachment_use="0"
+            report_type="webkit"/>
+
+    <record id="inventory_value.inventory_value_report" model="ir.actions.report.xml">
+      <field name="webkit_header" ref="base_headers_webkit.base_minimum_reports_portrait_header"/>
+    </record>
+
+    </data>
+</openerp>

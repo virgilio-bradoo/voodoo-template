@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_inventory_value_form" model="ir.ui.view">
+            <field name="name">Inventory.value.form</field>
+            <field name="model">inventory.value</field>
+            <field name="arch" type="xml">
+                <form string="Inventory" version="7.0">
+                <header>
+                    <button name="fill_inventory" string="Fill Inventory" type="object" class="oe_highlight"/>
+                    <button name="inventory_print" string="Print" type="object" class="oe_highlight"/>
+                </header>
+                <group>
+                    <field colspan="2" name="name"/>
+                    <field colspan="2" name="date"/>
+                </group>
+                <separator colspan="4" string="Inventory Lines"/>
+                <field name="inventory_line_ids" nolabel='1'>
+                    <tree editable='top'>
+                        <field name="product_id" readonly='1'/>
+                        <field name="default_code" readonly='1'/>
+                        <field name="quantity"/>
+                        <field name="immediatly_usable"/>
+                        <field name="standard_price"/>
+                        <field name="supplier_id"/>
+                    </tree>
+                </field>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_inventory_value" model="ir.actions.act_window">
+            <field name="name">Inventory Value</field>
+            <field name="res_model">inventory.value</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="inventory_value_menu" name="Inventory Value" parent="account.menu_configuration_misc"
+                  sequence="30" action="action_inventory_value"/>
+
+    </data>
+</openerp>

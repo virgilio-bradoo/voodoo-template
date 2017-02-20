@@ -1,0 +1,118 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* inventory_value
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-12-24 19:07+0000\n"
+"PO-Revision-Date: 2015-12-24 19:07+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: inventory_value
+#: view:inventory.value:0
+msgid "Fill Inventory"
+msgstr "Remplir l'inventaire"
+
+#. module: inventory_value
+#: view:inventory.value:0
+#: field:inventory.value,inventory_line_ids:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_inventory_line_ids
+msgid "Inventory Lines"
+msgstr "Lignes d'inventaire"
+
+#. module: inventory_value
+#: field:inventory.value,name:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_name
+msgid "name"
+msgstr "Nom"
+
+#. module: inventory_value
+#: field:inventory.value.line,supplier_id:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_supplier_id
+msgid "Supplier"
+msgstr "Fournisseur"
+
+#. module: inventory_value
+#: model:ir.model,name:inventory_value.model_inventory_value_line
+msgid "inventory.value.line"
+msgstr "inventory.value.line"
+
+#. module: inventory_value
+#: view:inventory.value:0
+msgid "Print"
+msgstr "Imprimer"
+
+#. module: inventory_value
+#: field:inventory.value.line,immediatly_usable:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_immediatly_usable
+msgid "Immediatly Usable"
+msgstr "Immediately Usable"
+
+#. module: inventory_value
+#: field:inventory.value.line,product_id:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_product_id
+msgid "Product"
+msgstr "Article"
+
+#. module: inventory_value
+#: field:inventory.value.line,default_code:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_default_code
+msgid "Default Code"
+msgstr "Référence interne"
+
+#. module: inventory_value
+#: model:ir.actions.act_window,name:inventory_value.action_inventory_value
+#: model:ir.ui.menu,name:inventory_value.inventory_value_menu
+msgid "Inventory Value"
+msgstr "Valeur de l'inventaire"
+
+#. module: inventory_value
+#: code:addons/inventory_value/inventory_value.py:43
+#, python-format
+msgid "Warning!"
+msgstr "Attention!"
+
+#. module: inventory_value
+#: view:inventory.value:0
+#: field:inventory.value.line,inventory_id:0
+#: model:ir.actions.report.xml,name:inventory_value.inventory_value_report
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_inventory_id
+msgid "Inventory"
+msgstr "Inventaire"
+
+#. module: inventory_value
+#: field:inventory.value.line,standard_price:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_standard_price
+msgid "Standard price"
+msgstr "Prix de revient"
+
+#. module: inventory_value
+#: field:inventory.value,date:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_date
+msgid "Date"
+msgstr "Date"
+
+#. module: inventory_value
+#: model:ir.model,name:inventory_value.model_inventory_value
+msgid "inventory.value"
+msgstr "inventory.value"
+
+#. module: inventory_value
+#: code:addons/inventory_value/inventory_value.py:43
+#, python-format
+msgid "The inventory already contains some lines"
+msgstr "L'inventaire contient déja des lignes"
+
+#. module: inventory_value
+#: field:inventory.value.line,quantity:0
+#: model:ir.model.fields,field_description:inventory_value.field_inventory_value_line_quantity
+msgid "Quantity"
+msgstr "Quantité"
+
