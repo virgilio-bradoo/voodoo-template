@@ -41,7 +41,7 @@ class AutomaticDepositWizard(orm.TransientModel):
             context=context)
         for company_id in company_ids:
             company_user_id = company_obj.get_company_action_user(
-                cr, uid, company_id, context=context)
+                cr, SUPERUSER_ID, company_id, context=context)
             for carrier_type in carrier_types:
                 wizard_id = deposit_wizard_obj.create(
                     cr, company_user_id,

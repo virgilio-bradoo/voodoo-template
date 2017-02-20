@@ -19,18 +19,19 @@
 #
 ##############################################################################
 
-{'name': 'Stock Picking APPS',
+{'name': 'Stock Picking Custom NSB',
  'version': '0.0.1',
  'author': 'Akretion',
  'website': 'www.akretion.com',
  'license': 'AGPL-3',
  'category': 'Generic Modules',
  'description': """
- 
+- apps in stock.py
+- coliposte in coliposte.py
  """,
  'depends': [
-     'stock',
-     'delivery',
+     'delivery_carrier_colipostefr',
+     'delivery_carrier_label_gls',
      'web',
  ],
  'data': [

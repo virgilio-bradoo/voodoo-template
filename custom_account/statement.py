@@ -92,52 +92,7 @@ class AccountStatementCompletionRule(orm.Model):
                                                  amount=st_line['amount'] if st_line['amount'] else 0.0,
                                                  context=context)
             res.update(st_vals)
-            if so.payment_method_id.account_id:
-                print 'acount name', so.payment_method_id.account_id.name
-                res['account_id'] = so.payment_method_id.account_id.id
         return res
-
-    # OVERWRITE get_ref and so in order to pass the account
-    #we should refactor teh abse method in order to allow this king of overwrite
-    #without redifinition
-    def get_from_ref_and_so(self, cr, uid, st_line, context=None):
-        """
-        Match the partner based on the SO number and the reference of the statement
-        line. Then, call the generic get_values_for_line method to complete other values.
-        If more than one partner matched, raise the ErrorTooManyPartner error.
-
-        :param int/long st_line: read of the concerned account.bank.statement.line
-        :return:
-            A dict of value that can be passed directly to the write method of
-            the statement line or {}
-           {'partner_id': value,
-            'account_id': value,
-
-            ...}
-        """
-        st_obj = self.pool.get('account.bank.statement.line')
-        res = {}
-        if st_line:
-            so_obj = self.pool.get('sale.order')
-            so_id = so_obj.search(cr,
-                                  uid,
-                                  [('name', '=', st_line['ref'])],
-                                  context=context)
-            if so_id:
-                if so_id and len(so_id) == 1:
-                    so = so_obj.browse(cr, uid, so_id[0], context=context)
-                    res['partner_id'] = so.partner_id.id
-                elif so_id and len(so_id) > 1:
-                    raise ErrorTooManyPartner(_('Line named "%s" (Ref:%s) was matched by more '
-                                                'than one partner while looking on SO by ref.') %
-                                              (st_line['name'], st_line['ref']))
-        ###END COPY/PASTE
-                so = so_obj.browse(cr, uid, so_id[0], context=context)
-                if so.payment_method_id.account_id:
-                    print 'acount name', so.payment_method_id.account_id.name
-                    res['account_id'] = so.payment_method_id.account_id.id
-        return res
-
 
     def get_from_email(self, cr, uid, st_line, context=None):
         """
@@ -183,37 +138,3 @@ class AccountStatementCompletionRule(orm.Model):
         res = super(AccountStatementCompletionRule, self).get_functions(cr, uid, context=context)
         res.append(('get_from_email', 'From Email'))
         return res
-
-
-
-#class AccountBankStatement(orm.Model):
-#    _inherit = "account.bank.statement"
-#
-#    def button_confirm_bank(self, cr, uid, ids, context=None):
-#        stat_line_obj = self.pool['account.bank.statement.line']
-#        for stat in self.browse(cr, uid, ids, context=context):
-#            transfers_amount = 0
-#            transfers_refund_amount = 0
-#            main_transfer_line = None
-#            main_refund_transfer_line = None
-#            if stat_line_obj.search(cr, uid, [('account_id', '=', 27930), ('statement_id', '=', stat.id)], context=context):
-#                if stat_line_obj.search(cr, uid, [('account_id', '=', 28309), ('statement_id', '=', stat.id)], context=context):
-#                    print "REMOVE 3x transfers!"
-#                    for line in stat.line_ids:
-#                        if line.account_id.id == 28309:
-#                            line.unlink()
-#                        elif line.account_id.id == 28061:
-#                            if line.amount < 0:
-#                                main_transfer_line = line 
-#                            else:
-#                                main_refund_transfer_line = line
-#                        else:
-#                            if line.amount > 0:
-#                                transfers_amount += line.amount
-#                            else:
-#                                transfers_refund_amount += line.amount
-#                    main_transfer_line.write({'amount': - transfers_amount})
-#                    if transfers_refund_amount:
-#                        main_refund_transfer_line.write({'amount': - transfers_refund_amount})
-#        return super(AccountBankStatement, self).button_confirm_bank(cr, uid, ids, context=context)
-#

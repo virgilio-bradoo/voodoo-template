@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
-#   Module for OpenERP
 #   Copyright (C) 2011-2014 Akretion (http://www.akretion.com).
 #   @author Sébastien BEAU <sebastien.beau@akretion.com>
 #
@@ -20,6 +19,18 @@
 #
 ###############################################################################
 
-from . import stock
-from . import gls
-from . import coliposte
+
+from openerp.osv import orm
+
+
+class StockPicking(orm.Model):
+    _inherit = 'stock.picking'
+
+    def _prepare_address_postefr(self, cr, uid, pick, context=None):
+        address = super(StockPicking, self)._prepare_address_postefr(
+            cr, uid, pick, context=context)
+        if pick.carrier_type == 'colissimo':
+            address['name'] = self._sanitize_company_name(
+                cr, uid, pick.partner_id, pick.partner_id.name,
+                context=context)[:35]
+        return address
