@@ -192,6 +192,8 @@ class StockMove(Model):
         res = {}
         for move in self.browse(cr, uid, ids, context=context):
             res[move.id] = {}.fromkeys(field_names, '')
+            if move.picking_id and not move.picking_id.min_date:
+                continue
             if (not move.state in ('auto', 'confirmed') or not move.picking_id or not
                     move.picking_id.type == 'out'):
                 continue
@@ -498,7 +500,7 @@ class StockPartialPicking(TransientModel):
             intercompany_move_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('is_intercompany', '=', True),
                                       ('intercompany_move_id', '=', move_id),
-                                      ('state', '!=', 'done'),
+                                      ('state', 'not in', ('cancel', 'done')),
                                       ('auto_validate', '=', False),])
             move_in_ids = move_obj.search(cr, SUPERUSER_ID, [
                                       ('picking_id.type', '=', 'in'),

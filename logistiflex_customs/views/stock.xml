@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <record id="custom_view_picking_form" model="ir.ui.view">
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form" />
+            <field name="arch" type="xml">
+                <field name="invoice_state" position="replace">
+                    <field name="invoice_state" string="Invoice Control" groups="account.group_account_invoice"/>
+                </field>
+            </field>
+        </record>
+
         <record id="view_picking_out_form" model="ir.ui.view">
             <field name="model">stock.picking.out</field>
             <field name="inherit_id" ref="stock.view_picking_out_form" />
@@ -15,7 +25,7 @@
             <field name="model">stock.move</field>
             <field name="inherit_id" ref="stock.view_move_search" />
             <field name="arch" type="xml">
-                <field name="prodlot_id" position="after">
+                <field name="name" position="after">
                    <field name="origin" string="Supplier" filter_domain="[('product_id.seller_ids','ilike',self)]"/>
                 </field>
             </field>
