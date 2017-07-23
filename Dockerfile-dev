@@ -1,0 +1,8 @@
+FROM akretion/voodoo:latest
+
+USER root
+ARG UID
+RUN usermod -u $UID odoo
+ARG GID
+RUN groupmod -g $GID odoo
+USER odoo

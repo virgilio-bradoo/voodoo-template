@@ -4,3 +4,9 @@ services:
     image: akretion/voodoo:latest
     labels:
       main_service: "True"
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+      args:
+        - UID = 1001
+        - GID = 1001
