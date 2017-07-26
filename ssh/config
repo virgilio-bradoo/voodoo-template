@@ -1,0 +1,3 @@
+Host somehost
+    Hostname github.com
+    StrictHostKeyChecking no
