@@ -39,6 +39,7 @@ etc
 parts
 bin
 settings
+ssh
 
 # Chef
 Berksfile.lock
